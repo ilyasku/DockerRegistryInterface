@@ -1,9 +1,10 @@
-package dockerregistry.controller;
+package dockerregistry.model;
 
 
+import dockerregistry.model.HttpInterface;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import dockerregistry.model.Tag;
+import dockerregistry.model.Image;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
