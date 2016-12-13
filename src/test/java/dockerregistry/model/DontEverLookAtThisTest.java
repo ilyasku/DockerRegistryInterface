@@ -20,6 +20,7 @@ import java.util.Map.Entry;
 import java.util.Scanner;
 import org.junit.Test;
 import static org.junit.Assert.*;
+import org.junit.Ignore;
 
 public class DontEverLookAtThisTest {
     
@@ -75,7 +76,7 @@ public class DontEverLookAtThisTest {
         }        
     }
     
-    
+    @Ignore
     @Test
     public void testGetArrayOfRepositories() throws IOException{
         System.out.println("--------------------------------------------------");
@@ -127,7 +128,8 @@ public class DontEverLookAtThisTest {
         String hash = http.getManifestHashAndManifestContent("ubuntu", "latest")[0];
         System.out.println(hash);
     }
-    
+
+    @Ignore
     @Test
     public void testLoadAllImagesToCache() throws IOException {
         System.out.println("--------------------------------------------------");

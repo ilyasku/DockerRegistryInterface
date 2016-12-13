@@ -19,12 +19,12 @@ public class Registry {
         this.mapper = mapper;
     }
     
-    String[] getRepositoryNames() throws IOException {
+    public String[] getRepositoryNames() throws IOException {
         String repositoryNamesAsJsonString = httpInterface.getRepositoryNames();
         return mapper.mapRepositoryNames(repositoryNamesAsJsonString);
     }
 
-    String[] getTagNames(String repositoryName) throws IOException {
+    public String[] getTagNames(String repositoryName) throws IOException {
         String tagNamesAsJsonString = httpInterface.getTagNames(repositoryName);
         return mapper.mapTagNames(tagNamesAsJsonString);
     }

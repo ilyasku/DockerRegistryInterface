@@ -1,0 +1,107 @@
+// Spring Shell 1.2.0.RELEASE log opened at 2016-12-13 13:14:31
+hw simple --message jo
+hw simple --message jo --location here
+list repository names
+exit
+// Spring Shell 1.2.0.RELEASE log closed at 2016-12-13 13:15:09
+// docker-registry-cli Banner 1.2.0.RELEASE log opened at 2016-12-13 13:36:35
+list repository names
+exit
+// docker-registry-cli Banner 1.2.0.RELEASE log closed at 2016-12-13 13:37:03
+// docker-registry-cli Banner 1.2.0.RELEASE log opened at 2016-12-13 13:55:45
+set url http://localhost:5000
+list repository names
+set url http://localhost:5000/
+list repository names
+exit
+// docker-registry-cli Banner 1.2.0.RELEASE log closed at 2016-12-13 13:57:59
+// docker-registry-cli Banner 1.2.0.RELEASE log opened at 2016-12-13 13:58:26
+help
+system properties
+help
+exit
+// docker-registry-cli Banner 1.2.0.RELEASE log closed at 2016-12-13 14:00:21
+// docker-registry-cli Banner 1.2.0.RELEASE log opened at 2016-12-13 14:00:27
+set url ?
+set url http://localhost:5000/
+exit
+// docker-registry-cli Banner 1.2.0.RELEASE log closed at 2016-12-13 14:01:17
+// docker-registry-cli Banner 1.2.0.RELEASE log opened at 2016-12-13 14:11:15
+exit
+// docker-registry-cli Banner 1.2.0.RELEASE log closed at 2016-12-13 14:11:17
+// docker-registry-cli Banner 1.2.0.RELEASE log opened at 2016-12-13 14:11:22
+// docker-registry-cli Banner 1.2.0.RELEASE log opened at 2016-12-13 14:11:38
+// docker-registry-cli Banner 1.2.0.RELEASE log opened at 2016-12-13 14:11:47
+// docker-registry-cli Banner 1.2.0.RELEASE log opened at 2016-12-13 14:12:21
+exit
+// docker-registry-cli Banner 1.2.0.RELEASE log closed at 2016-12-13 14:13:14
+// docker-registry-cli Banner 1.2.0.RELEASE log opened at 2016-12-13 14:13:20
+exit
+// docker-registry-cli Banner 1.2.0.RELEASE log closed at 2016-12-13 14:17:35
+// docker-registry-cli Banner 1.2.0.RELEASE log opened at 2016-12-13 14:17:40
+list tag names of ubuntu
+exit
+// docker-registry-cli Banner 1.2.0.RELEASE log closed at 2016-12-13 14:18:25
+// docker-registry-cli Banner 1.2.0.RELEASE log opened at 2016-12-13 14:18:33
+list tag names of ubuntu
+list tag names of nimmis-ubuntu
+list repository names
+exit
+// docker-registry-cli Banner 1.2.0.RELEASE log closed at 2016-12-13 14:24:08
+// docker-registry-cli Banner 1.2.0.RELEASE log opened at 2016-12-13 14:24:10
+exit
+// docker-registry-cli Banner 1.2.0.RELEASE log closed at 2016-12-13 14:24:11
+// docker-registry-cli Banner 1.2.0.RELEASE log opened at 2016-12-13 14:24:15
+list tag names of nimmis-ubuntu
+list tag names of ubuntu
+// [failed] list tag names of ubuntu nimmis-ubuntu
+// [failed] list tag names of ubuntu, nimmis-ubuntu
+list tag names of ubuntu,nimmis-ubuntu
+exit
+// docker-registry-cli Banner 1.2.0.RELEASE log closed at 2016-12-13 14:25:31
+// docker-registry-cli Banner 1.2.0.RELEASE log opened at 2016-12-13 14:41:03
+list repository names
+list tag names of whalesay
+list tag names of whalesay
+list tag names of whalesay
+exit
+// docker-registry-cli Banner 1.2.0.RELEASE log closed at 2016-12-13 15:14:25
+// docker-registry-cli Banner 1.2.0.RELEASE log opened at 2016-12-13 15:14:28
+list repository names
+exit
+// docker-registry-cli Banner 1.2.0.RELEASE log closed at 2016-12-13 15:16:05
+// docker-registry-cli Banner 1.2.0.RELEASE log opened at 2016-12-13 15:21:54
+list blobs of whalesay:latest,whalesay:3
+exit
+// docker-registry-cli Banner 1.2.0.RELEASE log closed at 2016-12-13 15:34:14
+// docker-registry-cli Banner 1.2.0.RELEASE log opened at 2016-12-13 15:34:20
+list blobs of whalesay:latest,whalesay:3
+exit
+// docker-registry-cli Banner 1.2.0.RELEASE log closed at 2016-12-13 15:35:21
+// docker-registry-cli Banner 1.2.0.RELEASE log opened at 2016-12-13 15:35:28
+list blobs of whalesay:latest,whalesay:3
+exit
+// docker-registry-cli Banner 1.2.0.RELEASE log closed at 2016-12-13 15:41:38
+// docker-registry-cli Banner 1.2.0.RELEASE log opened at 2016-12-13 15:41:43
+list blobs of whalesay:latest,whalesay:3
+exit
+// docker-registry-cli Banner 1.2.0.RELEASE log closed at 2016-12-13 15:42:42
+// docker-registry-cli Banner 1.2.0.RELEASE log opened at 2016-12-13 15:42:46
+list blobs of whalesay:latest,whalesay:3
+exit
+// docker-registry-cli Banner 1.2.0.RELEASE log closed at 2016-12-13 15:52:57
+// docker-registry-cli Banner 1.2.0.RELEASE log opened at 2016-12-13 15:53:01
+list blobs of whalesay:latest,whalesay:3
+print cache info
+list blobs of whalesay:latest,whalesay:2
+print cache info
+exit
+// docker-registry-cli Banner 1.2.0.RELEASE log closed at 2016-12-13 16:02:20
+// docker-registry-cli Banner 1.2.0.RELEASE log opened at 2016-12-13 16:02:27
+list blobs of whalesay:latest,whalesay:3
+print cache info
+list blobs of whalesay:latest,whalesay:2
+print cache info
+load complete image information
+exit
+// docker-registry-cli Banner 1.2.0.RELEASE log closed at 2016-12-13 16:04:10

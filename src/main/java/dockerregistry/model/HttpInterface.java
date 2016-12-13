@@ -13,7 +13,7 @@ public class HttpInterface {
     
     public HttpInterface(String url){
         this.urlPrefix = url;
-    }
+    }   
         
     public String getRepositoryNames() throws MalformedURLException, IOException{
         String query = "v2/_catalog";        
