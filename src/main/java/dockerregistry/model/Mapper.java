@@ -3,6 +3,8 @@ package dockerregistry.model;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Mapper {
     
@@ -35,16 +37,40 @@ public class Mapper {
         return arrayOfTags;
     }
     
-    public Manifest mapManifestResponseToObject(String[] manifestHashAndResponseBody) throws IOException{        
+    public Manifest mapManifestHashAndManifestContentToManifestObject(
+            String[] manifestHashAndManifestContent) throws IOException{        
          
-        String manifestHash = manifestHashAndResponseBody[0];
-        String manifestResponseBody = manifestHashAndResponseBody[1];
+        Manifest manifestObject = new Manifest();
+        
+        String manifestHash = manifestHashAndManifestContent[0];
+        String manifestAsJsonString = manifestHashAndManifestContent[1];
         
         ObjectMapper mapper = new ObjectMapper();        
-        JsonNode manifestAsJsonNode = mapper.readTree(manifestResponseBody);        
-                
-        return new Manifest(manifestHash, manifestAsJsonNode);
+        JsonNode manifestAsJsonNode = mapper.readTree(manifestAsJsonString);
         
+        Blob manifestBlob = new Blob(manifestHash, 0);
+        Blob configBlob = mapBlobNode(manifestAsJsonNode.get("config"));
+        List<Blob> layerBlobs = mapListOfBlobNodes(manifestAsJsonNode.get("layers"));
+        
+        manifestObject.setManifestBlob(manifestBlob);
+        manifestObject.setConfigBlob(configBlob);
+        manifestObject.setLayerBlobs(layerBlobs);        
+        
+        return manifestObject;        
     }
     
+    private Blob mapBlobNode(JsonNode blobNode) {
+        String hash = blobNode.get("digest").asText();
+        int size = blobNode.get("size").asInt();        
+        return new Blob(hash, size);
+    }
+    
+    private List<Blob> mapListOfBlobNodes(JsonNode listOfBlobNodes){
+        int length = listOfBlobNodes.size();
+        List<Blob> blobs = new ArrayList<>();
+        for (int i=0; i < length; i++) {
+            blobs.add(mapBlobNode(listOfBlobNodes.get(i)));
+        }        
+        return blobs;
+    }    
 }

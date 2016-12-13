@@ -7,9 +7,7 @@ public class Image {
     private final String repoName;
     private final String tagName;
     
-    private Blob[] layerBlobs;
-    private Blob manifestBlob;
-    private Blob configBlob;
+    private Manifest manifest;
 
     public Image(String repoPlusTagName){
         String[] splittedNames = repoPlusTagName.split(":");
@@ -20,6 +18,10 @@ public class Image {
         tagName = splittedNames[1];
     }
 
+    public void setManifest(Manifest manifest) {
+        this.manifest = manifest;
+    }
+        
     public String getName() {
         return repoName + ":" + tagName;
     }
@@ -32,28 +34,7 @@ public class Image {
         return tagName;
     }
 
-    public Blob[] getLayerBlobs() {
-        return layerBlobs;
-    }
-
-    public void setLayerBlobs(Blob[] layerBlobs) {
-        this.layerBlobs = layerBlobs;
-    }
-
-    public Blob getManifestBlob() {
-        return manifestBlob;
-    }
-
-    public void setManifestBlob(Blob manifestBlob) {
-        this.manifestBlob = manifestBlob;
-    }
-
-    public Blob getConfigBlob() {
-        return configBlob;
-    }
-
-    public void setConfigBlob(Blob configBlob) {
-        this.configBlob = configBlob;
-    }
-           
+    public Manifest getManifest() {
+        return manifest;
+    }           
 }

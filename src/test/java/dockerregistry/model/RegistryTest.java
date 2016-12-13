@@ -1,99 +1,95 @@
 package dockerregistry.model;
 
-import dockerregistry.model.RegistryInMemoryStorage;
-import com.fasterxml.jackson.databind.JsonNode;
-import dockerregistry.model.Manifest;
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 import org.junit.Test;
 import static org.junit.Assert.*;
-import static org.mockito.Mockito.mock;
+import org.junit.Before;
+import org.mockito.Matchers;
+import org.mockito.Mockito;
 import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.mock;
 
 public class RegistryTest {
     
+    private Registry registry;    
+    private HttpInterface mockHttpInterface;
+    private Mapper mockMapper;
+    private RegistryCacheInMemory mockRegistryCache;
+    
     public RegistryTest() {
     }
-
-    @Test
-    public void testRegistryInit() {                      
-        RegistryInMemoryStorage registry = new RegistryInMemoryStorage();
+    
+    @Before
+    public void setUp(){
+        registry = new Registry();
+        
+        mockHttpInterface = mock(HttpInterface.class);
+        mockMapper = mock(Mapper.class);
+        mockRegistryCache = mock(RegistryCacheInMemory.class);
+        
+        registry.setHttpInterface(mockHttpInterface);
+        registry.setMapper(mockMapper);
+        registry.setRegistryCache(mockRegistryCache);
     }
     
-    @Test
-    public void testGetNamesOfRepositories() {                        
+    @Test 
+    public void testGetRepositoryNames() throws IOException{        
+        when(mockHttpInterface.getRepositoryNames()).thenReturn("mock-my-life");
+        when(mockMapper.mapRepositoryNames("mock-my-life")).thenReturn(new String[]{"ubuntu","hello-world","whalesay"});        
                 
+        String[] repoNames = registry.getRepositoryNames();
+        
+        assertTrue(repoNames[0].equals("ubuntu"));
+        assertTrue(repoNames[1].equals("hello-world"));
+        assertTrue(repoNames[2].equals("whalesay"));
     }
     
     @Test
-    public void testGetRepositoryByName() {                      
+    public void testGetTagNames() throws IOException{
+        when(mockHttpInterface.getTagNames("repo")).thenReturn("mock-my-life");
+        when(mockMapper.mapTagNames("mock-my-life")).thenReturn(new String[]{"latest","0.1.0","0.1.1"});
         
-    }
-    
-    @Test
-    public void testGetNumberOfRepositories() {                      
+        String[] tagNames = registry.getTagNames("repo");
         
-    }
- 
-    @Test
-    public void testBuildTagAndBlobsFromManifest() {                
-        
-        JsonNode mockConfigNode = 
-                buildMockJsonNodeWithDigestAndSize(
-                        "sha256:4ca3a192ff2a5b7e225e81dc006b6379c10776ed3619757a65608cb72de0a7f6",
-                        3621);        
-        
-        JsonNode mockLayersNode = mock(JsonNode.class);
-        when(mockLayersNode.size()).thenReturn(2);
-        
-        JsonNode mockFirstLayerNode = 
-                buildMockJsonNodeWithDigestAndSize(
-                        "sha256:af49a5ceb2a56a8232402f5868cdb13dfdae5d66a62955a73e647e16e9f30a63", 
-                        50096701);        
-        JsonNode mockSecondLayerNode = 
-                buildMockJsonNodeWithDigestAndSize(
-                        "sha256:8f9757b472e7962a4304d4af61630e2cde66129218135b4093a43b9db8942c34",
-                        824);
-        
-        when(mockLayersNode.get(1)).thenReturn(mockFirstLayerNode);
-        when(mockLayersNode.get(2)).thenReturn(mockSecondLayerNode);
-        
-        Manifest mockManifest = mock(Manifest.class);
-        when(mockManifest.getManifestHash()).thenReturn("sha256:3b64c309deae7ab0f7dbdd42b6b326261ccd6261da5d88396439353162703fb5");
-        when(mockManifest.getConfigNode()).thenReturn(mockConfigNode);
-        when(mockManifest.getLayersNode()).thenReturn(mockLayersNode);
-        
-        RegistryInMemoryStorage registry = new RegistryInMemoryStorage();
-                        
-        registry.buildTagAndBlobsFromManifest(mockManifest, "test:tag");
-        
-        assertEquals(4, registry.getListOfBlobs().size());
-        assertTrue(registry.blobByThatHashExistsInRegistry("sha256:3b64c309deae7ab0f7dbdd42b6b326261ccd6261da5d88396439353162703fb5"));
-        assertTrue(registry.blobByThatHashExistsInRegistry("sha256:af49a5ceb2a56a8232402f5868cdb13dfdae5d66a62955a73e647e16e9f30a63"));
-        assertFalse(registry.blobByThatHashExistsInRegistry("This is not the hash you are looking for."));
-        
-        // Use buildTagAndBlobsFromManifest with slightly different manifest.
-        // Identical blobs should not be appended to the list of blobs a second time.
-        
-        mockFirstLayerNode = buildMockJsonNodeWithDigestAndSize("sha256:47b5e16c0811b08c1cf3198fa5ac0b920946ac538a0a0030627d19763e2fa212", 682);
-        when(mockLayersNode.get(1)).thenReturn(mockFirstLayerNode);
-        when(mockManifest.getLayersNode()).thenReturn(mockLayersNode);
-        
-        registry.buildTagAndBlobsFromManifest(mockManifest, "test:tag2");        
-        
-        assertEquals(5, registry.getListOfBlobs().size());
-        assertTrue(registry.blobByThatHashExistsInRegistry("sha256:47b5e16c0811b08c1cf3198fa5ac0b920946ac538a0a0030627d19763e2fa212"));        
+        assertTrue(tagNames[0].equals("latest"));
+        assertTrue(tagNames[1].equals("0.1.0"));
+        assertTrue(tagNames[2].equals("0.1.1"));
     }
 
-    private JsonNode buildMockJsonNodeWithDigestAndSize(String digest, int size){
-        JsonNode mockJsonNode = mock(JsonNode.class);
-        JsonNode mockDigestNode = mock(JsonNode.class);
-        JsonNode mockSizeNode = mock(JsonNode.class);
+    @Test
+    public void testGetImageByName() throws IOException {
+        Map<String, Image> imageCache = new HashMap<>();
+        Image image11 = new Image("repo1:tag1");
+        Image image21 = new Image("repo2:tag1");
+        imageCache.put("repo1:tag1", image11);
+        imageCache.put("repo2:tag1", image21);
+                        
+        when(mockRegistryCache.imageCacheContains("repo1:tag1")).thenReturn(true);
+        when(mockRegistryCache.imageCacheContains("repo2:tag1")).thenReturn(true);
+        when(mockRegistryCache.getImageCache()).thenReturn(imageCache);
+
         
-        when(mockJsonNode.get("digest")).thenReturn(mockDigestNode);
-        when(mockJsonNode.get("size")).thenReturn(mockSizeNode);
+        String[] manifestHashAndContentOfImage12 = new String[]{"mock-my-life", "mock-my-life"};
+        Manifest manifestObjectOfImage12 = new Manifest();
         
-        when(mockDigestNode.asText()).thenReturn(digest);
-        when(mockSizeNode.asInt()).thenReturn(size);
+        when(mockRegistryCache.imageCacheContains("repo1:tag2")).thenReturn(false);
+        when(mockHttpInterface.getManifestHashAndManifestContent("repo1", "tag2")).thenReturn(manifestHashAndContentOfImage12);
+        when(mockMapper.mapManifestHashAndManifestContentToManifestObject(manifestHashAndContentOfImage12)).thenReturn(manifestObjectOfImage12);
         
-        return mockJsonNode;
-    }    
+        
+        
+        Image returnImage11 = registry.getImageByName("repo1:tag1");
+        assertSame(image11,returnImage11);
+        Image returnImage21 = registry.getImageByName("repo2:tag1");
+        assertSame(image21, returnImage21);
+        
+        // LIMIT OF MY MOCKING ABILITIES REACHED ...
+        // Mockito.doCallRealMethod().when(mockRegistryCache).addImage(Matchers.any(Image.class));
+        // Image returnImage12 = registry.getImageByName("repo1:tag2");
+        // assertTrue("repo1:tag2".equals(returnImage12.getName()));        
+    }          
+    
+    
 }

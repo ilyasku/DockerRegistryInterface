@@ -1,29 +1,33 @@
 package dockerregistry.model;
 
-import com.fasterxml.jackson.databind.JsonNode;
+import java.util.List;
 
 public class Manifest {
-    private final String manifestHash;
-    private final JsonNode manifestAsJsonNode;
-    
-    public Manifest(String manifestHash, JsonNode manifestAsJsonNode) {
-        this.manifestAsJsonNode = manifestAsJsonNode;
-        this.manifestHash = manifestHash;        
+    private Blob manifestBlob;
+    private Blob configBlob;
+    private List<Blob> layerBlobs;
+
+    public Blob getManifestBlob() {
+        return manifestBlob;
     }
 
-    public JsonNode getConfigNode() {
-        return manifestAsJsonNode.get("config");
-    }
-    
-    public JsonNode getLayersNode() {
-        return manifestAsJsonNode.get("layers");
-    }
-    
-    public String getManifestHash() {
-        return manifestHash;
+    public void setManifestBlob(Blob manifestBlob) {
+        this.manifestBlob = manifestBlob;
     }
 
-    public JsonNode getManifestAsJsonNode() {
-        return manifestAsJsonNode;
+    public Blob getConfigBlob() {
+        return configBlob;
     }
+
+    public void setConfigBlob(Blob configBlob) {
+        this.configBlob = configBlob;
+    }
+
+    public List<Blob> getLayerBlobs() {
+        return layerBlobs;
+    }
+
+    public void setLayerBlobs(List<Blob> layerBlobs) {
+        this.layerBlobs = layerBlobs;
+    }    
 }

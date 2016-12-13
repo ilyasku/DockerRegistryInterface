@@ -82,8 +82,13 @@ public class DontEverLookAtThisTest {
         System.out.println("RequesterTest: method testGetArrayOfRepositories");
         
         HttpInterface http = new HttpInterface("http://localhost:5000/");
+        Mapper mapper = new Mapper();
         
-        String[] arrayOfRepositories = http.getRepositoryNames();
+        String repositoryNamesAsJsonString = http.getRepositoryNames();
+        
+        System.out.println(repositoryNamesAsJsonString);
+        
+        String[] arrayOfRepositories = mapper.mapRepositoryNames(repositoryNamesAsJsonString);
         
         for (int i = 0; i < arrayOfRepositories.length; i++) {
             System.out.println(arrayOfRepositories[i]);
@@ -99,8 +104,10 @@ public class DontEverLookAtThisTest {
         System.out.println("RequesterTest: method testGetTagNames");
         
         HttpInterface http = new HttpInterface("http://localhost:5000/");
+        Mapper mapper = new Mapper();
         
-        String[] tagNames = http.getTagNames("ubuntu");
+         String tagNamesAsJsonString = http.getTagNames("ubuntu");
+         String[] tagNames = mapper.mapTagNames(tagNamesAsJsonString);
         
         for (int i = 0; i < tagNames.length; i++) {
             System.out.println(tagNames[i]);
@@ -109,35 +116,35 @@ public class DontEverLookAtThisTest {
         assertEquals("latest", tagNames[0]);
     }
     
+    
     @Test
-    public void testGetHashOfTag() throws IOException {
+    public void testGetHashOfManifest() throws IOException {
         System.out.println("--------------------------------------------------");
         System.out.println("RequesterTest: method testGetHashOfTag");
         
         HttpInterface http = new HttpInterface("http://localhost:5000/");
         
-        String hash = http.getHashOfManifest("ubuntu", "latest");
+        String hash = http.getManifestHashAndManifestContent("ubuntu", "latest")[0];
         System.out.println(hash);
     }
     
     @Test
-    public void testCreateTagObject() throws IOException {
-    }
-    
-    @Test
-    public void someListProperties() {
+    public void testLoadAllImagesToCache() throws IOException {
         System.out.println("--------------------------------------------------");
-        System.out.println("RequesterTest: method someListProperties");
-        List<Integer> l = new ArrayList<>();
+        System.out.println("DontEverLookAtThisTest: method testLoadAllImagesToCache");
+        HttpInterface http = new HttpInterface("http://localhost:5000/");
+        Mapper mapper = new Mapper();
+        RegistryCacheInMemory registryCache = new RegistryCacheInMemory();
         
-        l.add(0);
-        l.add(12);
+        Registry registry = new Registry();
+        registry.setHttpInterface(http);
+        registry.setMapper(mapper);
+        registry.setRegistryCache(registryCache);                
         
-        System.out.println(l.indexOf(0));
-        System.out.println(l.indexOf(12));
-        
-        System.out.println(l.indexOf(7));
-        
-    }
+        registry.loadAllImagesToRegistryCache();
+        Map<String, Image> imageCache = registry.getMapOfImages();
+        assertEquals(1, imageCache.size());
+        assertTrue(imageCache.containsKey("ubuntu:latest"));
+    }    
 }
 
