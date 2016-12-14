@@ -105,3 +105,38 @@ print cache info
 load complete image information
 exit
 // docker-registry-cli Banner 1.2.0.RELEASE log closed at 2016-12-13 16:04:10
+// docker-registry-cli Banner 1.2.0.RELEASE log opened at 2016-12-14 09:56:27
+list repository names
+print cache info
+load complete image information
+exit
+// docker-registry-cli Banner 1.2.0.RELEASE log closed at 2016-12-14 09:57:51
+// docker-registry-cli Banner 1.2.0.RELEASE log opened at 2016-12-14 10:30:43
+lcii
+exit
+// docker-registry-cli Banner 1.2.0.RELEASE log closed at 2016-12-14 10:31:08
+// docker-registry-cli Banner 1.2.0.RELEASE log opened at 2016-12-14 13:14:26
+list blobs of whalesay:latest
+print cache info
+load complete image information
+load dependencies between blobs-images
+list unreferenced blobs if following images would be deleted whalesay:latest,whalesay:2
+exit
+// docker-registry-cli Banner 1.2.0.RELEASE log closed at 2016-12-14 13:17:06
+// docker-registry-cli Banner 1.2.0.RELEASE log opened at 2016-12-14 13:20:50
+// [failed] list blobs of whalesay:latest
+// [failed] exit
+// [failed] exit
+// [failed] quit
+// docker-registry-cli Banner 1.2.0.RELEASE log opened at 2016-12-14 13:21:36
+print cache info
+load dependencies between blobs-images
+load complete image information
+load dependencies between blobs-images
+list blobs unreferenced after deletion of whalesay:latest,whalesay:2
+exit
+// docker-registry-cli Banner 1.2.0.RELEASE log closed at 2016-12-14 13:34:15
+// docker-registry-cli Banner 1.2.0.RELEASE log opened at 2016-12-14 13:34:23
+// [failed] list images depending on sha256:0ae1ae15af216ee26cf91b7529d9ef1c1e6242efaeeaa20bc22692aa1e2f2352
+exit
+// docker-registry-cli Banner 1.2.0.RELEASE log closed at 2016-12-14 13:35:02

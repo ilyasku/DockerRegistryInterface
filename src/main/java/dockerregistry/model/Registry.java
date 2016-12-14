@@ -1,15 +1,15 @@
 package dockerregistry.model;
 
-import dockerregistry.exceptions.NoImageByThatNameInImageCacheException;
 import java.io.IOException;
+import java.util.List;
 import java.util.Map;
-import sun.awt.image.ImageCache;
 
 public class Registry {
 
     private HttpInterface httpInterface;        
     private Mapper mapper;
     private RegistryCacheInMemory registryCache;
+    private BlobImageDependencyChecker dependencyChecker;
     
     public void setHttpInterface(HttpInterface httpInterface) {
         this.httpInterface = httpInterface;
@@ -17,6 +17,14 @@ public class Registry {
 
     public void setMapper(Mapper mapper) {
         this.mapper = mapper;
+    }
+    
+    public void setRegistryCache(RegistryCacheInMemory registryCache) {
+        this.registryCache = registryCache;
+    }
+    
+    public void setDependencyChecker(BlobImageDependencyChecker dependencyChecker) {
+        this.dependencyChecker = dependencyChecker;
     }
     
     public String[] getRepositoryNames() throws IOException {
@@ -36,11 +44,15 @@ public class Registry {
     public Map<String, Blob> getMapOfBlobs() {
         return registryCache.getBlobCache();
     }
-    
-    public void setRegistryCache(RegistryCacheInMemory registryCache) {
-        this.registryCache = registryCache;
-    }
 
+    public Map<String, List<String>> getDependencyMapOfBlobsAndImages() {
+        return dependencyChecker.getDependencyMap();
+    }
+    
+    public Map<String, List<String>> getDependencyMapOfBlobsAndImagesIfImagesWouldBeDeleted(String[] namesOfImagesConsideredDeleted){
+        return dependencyChecker.getDependencyMapWithImagesDeleted(namesOfImagesConsideredDeleted);
+    }
+    
     public Image getImageByName(String imageName) throws IOException {
         if (!registryCache.imageCacheContains(imageName)){        
             buildImageViaHttpRequestAndAddToRegistryCache(imageName);
@@ -56,7 +68,11 @@ public class Registry {
                     buildImageViaHttpRequestAndAddToRegistryCache(imageName);
                 }
             }
-        }
+        }        
+    }    
+    
+    public void buildDependencyMapOfBlobsAndImages(){
+        dependencyChecker.buildDependencyMap(getMapOfImages());
     }
     
     private Image getImageFromRegistryCache(String imageName) {
@@ -73,6 +89,8 @@ public class Registry {
         newImage.setManifest(manifestOfImage);
         
         registryCache.addImage(newImage);        
-    }
+    }    
+
+    
     
 }
