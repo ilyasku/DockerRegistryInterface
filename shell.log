@@ -140,3 +140,128 @@ exit
 // [failed] list images depending on sha256:0ae1ae15af216ee26cf91b7529d9ef1c1e6242efaeeaa20bc22692aa1e2f2352
 exit
 // docker-registry-cli Banner 1.2.0.RELEASE log closed at 2016-12-14 13:35:02
+// docker-registry-cli Banner 1.2.0.RELEASE log opened at 2016-12-14 14:01:47
+set url http://localhost:5000/
+list repositories
+list tags of whalesay
+list blobs of whalesay:latest
+print cache info
+load complete image information
+load dependencies between blobs-images
+list blobs unreferenced after deletion of whalesay:latest,whalesay:2
+exit
+// docker-registry-cli Banner 1.2.0.RELEASE log closed at 2016-12-14 14:10:26
+// docker-registry-cli Banner 1.2.0.RELEASE log opened at 2016-12-14 14:10:29
+set url https://docker.flavia-it.de
+list repositories
+exit
+// docker-registry-cli Banner 1.2.0.RELEASE log closed at 2016-12-14 14:11:18
+// docker-registry-cli Banner 1.2.0.RELEASE log opened at 2016-12-14 14:11:47
+set url https://docker.flavia-it.de
+list repositories
+exit
+// docker-registry-cli Banner 1.2.0.RELEASE log closed at 2016-12-14 14:16:11
+// docker-registry-cli Banner 1.2.0.RELEASE log opened at 2016-12-14 15:46:14
+set credentials
+set credentials
+exit
+// docker-registry-cli Banner 1.2.0.RELEASE log closed at 2016-12-14 15:52:52
+// docker-registry-cli Banner 1.2.0.RELEASE log opened at 2016-12-14 15:53:45
+set credentials
+exit
+// docker-registry-cli Banner 1.2.0.RELEASE log closed at 2016-12-14 15:55:23
+// docker-registry-cli Banner 1.2.0.RELEASE log opened at 2016-12-14 16:10:22
+set credentials
+// [failed] list blobs of whalesay
+list blobs of whalesay:latest
+exit
+// docker-registry-cli Banner 1.2.0.RELEASE log closed at 2016-12-14 16:15:57
+// docker-registry-cli Banner 1.2.0.RELEASE log opened at 2016-12-14 16:16:02
+set credentials
+list blobs of whalesay:latest
+exit
+// docker-registry-cli Banner 1.2.0.RELEASE log closed at 2016-12-14 16:16:16
+// docker-registry-cli Banner 1.2.0.RELEASE log opened at 2016-12-14 17:09:01
+list blobs of whalesay:latest
+list repositories
+list tags of --repository-names ubuntu,whalesay
+load complete image information
+load dependencies between blobs-images
+list blobs unreferenced after deletion of whalesay:latest,ubuntu:latest,whalesay:2
+list blobs unreferenced after deletion of whalesay:latest,whalesay:2
+exit
+// docker-registry-cli Banner 1.2.0.RELEASE log closed at 2016-12-15 09:55:05
+// docker-registry-cli Banner 1.2.0.RELEASE log opened at 2016-12-15 09:55:07
+// [failed] list tags of --repository-names ubuntu,whalesay
+list repositories
+exit
+// docker-registry-cli Banner 1.2.0.RELEASE log closed at 2016-12-15 09:55:45
+// docker-registry-cli Banner 1.2.0.RELEASE log opened at 2016-12-15 10:03:06
+list repositories
+set credentials
+list repositories
+exit
+// docker-registry-cli Banner 1.2.0.RELEASE log closed at 2016-12-15 10:03:49
+// docker-registry-cli Banner 1.2.0.RELEASE log opened at 2016-12-15 10:25:30
+set credentials
+exit
+// docker-registry-cli Banner 1.2.0.RELEASE log closed at 2016-12-15 10:26:36
+// docker-registry-cli Banner 1.2.0.RELEASE log opened at 2016-12-15 10:26:42
+set credentials
+exit
+// docker-registry-cli Banner 1.2.0.RELEASE log closed at 2016-12-15 10:27:30
+// docker-registry-cli Banner 1.2.0.RELEASE log opened at 2016-12-15 10:40:37
+list repositories
+exit
+// docker-registry-cli Banner 1.2.0.RELEASE log closed at 2016-12-15 10:40:43
+// docker-registry-cli Banner 1.2.0.RELEASE log opened at 2016-12-15 10:46:18
+set url https://docker.flavia-it.de
+list repositories
+set credentials
+list repositories
+exit
+// docker-registry-cli Banner 1.2.0.RELEASE log closed at 2016-12-15 10:47:09
+// docker-registry-cli Banner 1.2.0.RELEASE log opened at 2016-12-15 10:52:58
+set url https://docker.flavia-it.de
+list repositories
+exit
+// docker-registry-cli Banner 1.2.0.RELEASE log closed at 2016-12-15 11:05:12
+// docker-registry-cli Banner 1.2.0.RELEASE log opened at 2016-12-15 11:05:13
+set url https://docker.flavia-it.de
+set url https://docker.flavia-it.de-
+exit
+// docker-registry-cli Banner 1.2.0.RELEASE log closed at 2016-12-15 11:05:32
+// docker-registry-cli Banner 1.2.0.RELEASE log opened at 2016-12-15 11:05:40
+set url https://docker.flavia-it.de/
+list repositories
+exit
+// docker-registry-cli Banner 1.2.0.RELEASE log closed at 2016-12-15 11:08:02
+// docker-registry-cli Banner 1.2.0.RELEASE log opened at 2016-12-15 11:08:14
+set url https://docker.flavia-it.de/
+list repositories
+list tags of norris
+exit
+// docker-registry-cli Banner 1.2.0.RELEASE log closed at 2016-12-15 11:09:42
+// docker-registry-cli Banner 1.2.0.RELEASE log opened at 2016-12-15 11:09:44
+set url https://docker.flavia-it.de/
+list repositories
+list tags of norris
+// [failed] list blobs of norris:1437
+// [failed] list blobs of norris:latest
+set credentials
+// [failed] list blobs of norris:latest
+exit
+// docker-registry-cli Banner 1.2.0.RELEASE log closed at 2016-12-15 11:13:08
+// docker-registry-cli Banner 1.2.0.RELEASE log opened at 2016-12-15 11:13:21
+set url https://docker.flavia-it.de/
+list repositories
+list tags of norris
+// [failed] list tags of norris:1436
+set credentials
+// [failed] list tags of norris:1436
+list tags of norris
+// [failed] list blobs of norris:1436
+list tags of gridware-customerbackoffice
+// [failed] list blobs of gridware-customerbackoffice:69
+exit
+// docker-registry-cli Banner 1.2.0.RELEASE log closed at 2016-12-15 18:17:46

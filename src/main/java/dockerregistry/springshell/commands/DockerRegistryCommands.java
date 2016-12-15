@@ -10,11 +10,12 @@ import dockerregistry.model.RegistryCacheInMemory;
 import dockerregistry.springshell.ObjectToCliStringFormatter;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import jline.console.ConsoleReader;
 import org.springframework.shell.core.CommandMarker;
-import org.springframework.shell.core.annotation.CliAvailabilityIndicator;
 import org.springframework.shell.core.annotation.CliCommand;
 import org.springframework.shell.core.annotation.CliOption;
 import org.springframework.stereotype.Component;
@@ -31,6 +32,8 @@ public class DockerRegistryCommands implements CommandMarker{
     
     private final ObjectToCliStringFormatter stringFormatter = new ObjectToCliStringFormatter();
     
+    private String encodedUsernamePassword = null;
+    
     public DockerRegistryCommands() {
         registry = new Registry();
         registry.setHttpInterface(httpInterface);
@@ -42,9 +45,25 @@ public class DockerRegistryCommands implements CommandMarker{
     @CliCommand(value = "set url", help = "Set URL of the repository you want to connect to.")
     public String setUrl(
     @CliOption(key = {"","url"}, mandatory = true, help = "URL of repository you want to connect to") String url){
-        httpInterface = new HttpInterface(url);
+        this.url = url;
+        httpInterface = new HttpInterface(this.url);
+        if (encodedUsernamePassword != null){
+            httpInterface.setEncodedUsernamePassword(encodedUsernamePassword);
+        }
         registry.setHttpInterface(httpInterface);
         return "set HttpInterface to url \"" + url + "\"";
+    }
+    
+    @CliCommand(value = "set credentials", help = "Set username and password to autheticate at the registry.")
+    public String setCredentials() throws IOException {
+        ConsoleReader reader = new ConsoleReader();
+        String userName = reader.readLine("Username: ");
+        String password = reader.readLine("Password: ",Character.MIN_VALUE);
+        String usernamePassword = userName + ":" + password;
+        String base64encodedCredentials = Base64.getEncoder().encodeToString(usernamePassword.getBytes());
+        encodedUsernamePassword = base64encodedCredentials;
+        httpInterface.setEncodedUsernamePassword(encodedUsernamePassword);        
+        return "Credentials set.";
     }
     
     @CliCommand(value = "list repositories", help = "List names of all repositories")

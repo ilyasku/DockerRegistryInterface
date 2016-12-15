@@ -10,15 +10,23 @@ import java.util.Scanner;
 public class HttpInterface {
     
     private final String urlPrefix;
+    private String encodedUsernamePassword = null;
     
     public HttpInterface(String url){
         this.urlPrefix = url;
     }   
-        
+     
+    public void setEncodedUsernamePassword(String encodedUsernamePassword) {
+        this.encodedUsernamePassword = encodedUsernamePassword;
+    }
+    
     public String getRepositoryNames() throws MalformedURLException, IOException{
-        String query = "v2/_catalog";        
+        String query = "/v2/_catalog";        
         HttpURLConnection connection = (HttpURLConnection) new URL(urlPrefix + query).openConnection();
         connection.setRequestProperty("Accept", "application/vnd.docker.distribution.manifest.v2+json");   
+        if (encodedUsernamePassword != null){
+            connection.setRequestProperty("Authorization", encodedUsernamePassword);
+        }
         
         InputStream response = connection.getInputStream();        
         Scanner scanner = new Scanner(response);        
@@ -28,9 +36,12 @@ public class HttpInterface {
     }
     
     public String getTagNames(String repositoryName) throws MalformedURLException, IOException {
-        String query = "v2/"+ repositoryName + "/tags/list";        
+        String query = "/v2/"+ repositoryName + "/tags/list";        
         HttpURLConnection connection = (HttpURLConnection) new URL(urlPrefix + query).openConnection();
-        connection.setRequestProperty("Accept", "application/vnd.docker.distribution.manifest.v2+json");   
+        connection.setRequestProperty("Accept", "application/vnd.docker.distribution.manifest.v2+json");
+        if (encodedUsernamePassword != null){
+            connection.setRequestProperty("Authorization", encodedUsernamePassword);
+        }
         
         InputStream response = connection.getInputStream();        
         Scanner scanner = new Scanner(response);        
@@ -43,6 +54,9 @@ public class HttpInterface {
         String query = String.format("/v2/%s/manifests/%s", repositoryName, tagName);        
         HttpURLConnection connection = (HttpURLConnection) new URL(urlPrefix + query).openConnection();
         connection.setRequestProperty("Accept", "application/vnd.docker.distribution.manifest.v2+json");        
+        if (encodedUsernamePassword != null){
+            connection.setRequestProperty("Authorization", encodedUsernamePassword);
+        }
         
         String[] manifestHashAndManifestContent = new String[2];        
         String manifestHash = connection.getHeaderField("Docker-Content-Digest");        
@@ -55,7 +69,5 @@ public class HttpInterface {
         manifestHashAndManifestContent[1] = manifestResponseBody;
         
         return manifestHashAndManifestContent;                                      
-    }
-
-    
+    }    
 }
