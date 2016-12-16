@@ -147,6 +147,14 @@ public class DontEverLookAtThisTest {
         Map<String, Image> imageCache = registry.getMapOfImages();
         assertEquals(1, imageCache.size());
         assertTrue(imageCache.containsKey("ubuntu:latest"));
-    }    
+    }
+    
+    @Test
+    public void testWhatDoesUserHomeReturn(){
+        System.out.println("--------------------------------------------------");
+        System.out.println("DontEverLookAtThisTest: method testWhatDoesUserHomeReturn");
+        System.err.println(System.getProperty("user.home"));
+    }
+        
 }
 

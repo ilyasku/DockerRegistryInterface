@@ -4,18 +4,24 @@ import dockerregistry.model.Blob;
 import dockerregistry.model.BlobImageDependencyChecker;
 import dockerregistry.model.HttpInterface;
 import dockerregistry.model.Image;
+import dockerregistry.model.LocalConfigHandler;
 import dockerregistry.model.Mapper;
 import dockerregistry.model.Registry;
 import dockerregistry.model.RegistryCacheInMemory;
 import dockerregistry.springshell.ObjectToCliStringFormatter;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Base64;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import jline.console.ConsoleReader;
 import org.springframework.shell.core.CommandMarker;
+import org.springframework.shell.core.annotation.CliAvailabilityIndicator;
 import org.springframework.shell.core.annotation.CliCommand;
 import org.springframework.shell.core.annotation.CliOption;
 import org.springframework.stereotype.Component;
@@ -23,34 +29,61 @@ import org.springframework.stereotype.Component;
 @Component
 public class DockerRegistryCommands implements CommandMarker{
     
-    private String url = "http://localhost:5000/";
-    private HttpInterface httpInterface = new HttpInterface(url);
-    private final Mapper mapper = new Mapper();
-    private RegistryCacheInMemory registryCache = new RegistryCacheInMemory();
-    private BlobImageDependencyChecker dependencyChecker = new BlobImageDependencyChecker();
-    private final Registry registry;
+    private boolean completeImageInfoLoaded = false;
+    private boolean dependencyMapBuild = false;
+    
+    
+    private LocalConfigHandler localConfigHandler = new LocalConfigHandler();
+    private String url;
+    private HttpInterface httpInterface;
+    private final Mapper mapper  = new Mapper();;
+    private RegistryCacheInMemory registryCache;
+    private BlobImageDependencyChecker dependencyChecker;
+    private final Registry registry = new Registry();
     
     private final ObjectToCliStringFormatter stringFormatter = new ObjectToCliStringFormatter();
     
     private String encodedUsernamePassword = null;
     
-    public DockerRegistryCommands() {
-        registry = new Registry();
-        registry.setHttpInterface(httpInterface);
-        registry.setMapper(mapper);
-        registry.setRegistryCache(registryCache);
-        registry.setDependencyChecker(dependencyChecker);
+    public DockerRegistryCommands() throws IOException {
+        
+        url = constructInitialUrl();        
+        initializeRegistry();
+    }    
+    
+    @CliAvailabilityIndicator({"load dependencies between blobs-images"})
+    public boolean isLoadDependenciesAvailable(){
+        return completeImageInfoLoaded;
     }
+    
+    @CliAvailabilityIndicator({"list blobs unreferenced after deletion of"})
+    public boolean isListBlobsUnreferencedAvailable(){
+        return completeImageInfoLoaded && dependencyMapBuild;
+    }
+    
+    
     
     @CliCommand(value = "set url", help = "Set URL of the repository you want to connect to.")
     public String setUrl(
-    @CliOption(key = {"","url"}, mandatory = true, help = "URL of repository you want to connect to") String url){
+            @CliOption(key = {"","url"}, mandatory = true, 
+                    help = "URL of repository you want to connect to") String url,
+            @CliOption(key = {"default", "set-as-default"}, mandatory = false,
+                    help = "set this URL as default (this URL will be used on next start of the docker-registry-shell)",
+                    specifiedDefaultValue = "true",
+                    unspecifiedDefaultValue = "false") String makeDefault){
         this.url = url;
         httpInterface = new HttpInterface(this.url);
         if (encodedUsernamePassword != null){
             httpInterface.setEncodedUsernamePassword(encodedUsernamePassword);
         }
         registry.setHttpInterface(httpInterface);
+        if (makeDefault.equals("true")){
+            try {
+                localConfigHandler.writeUrl(url);
+            } catch (FileNotFoundException | UnsupportedEncodingException ex) {
+                Logger.getLogger(DockerRegistryCommands.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
         return "set HttpInterface to url \"" + url + "\"";
     }
     
@@ -141,6 +174,7 @@ public class DockerRegistryCommands implements CommandMarker{
         registry.loadAllImagesToRegistryCache();
         String returnString = "Done.\n";
         returnString = returnString + getRegistryCacheInfo();
+        completeImageInfoLoaded = true;
         return returnString;
     }
     
@@ -149,6 +183,7 @@ public class DockerRegistryCommands implements CommandMarker{
             + "This information will not be complete, unless you called \"load complete image information\" before!!")
     public String loadDependenciesWhichImagesDependOnWhichBlobs(){        
         registry.buildDependencyMapOfBlobsAndImages();
+        dependencyMapBuild = true;
         return "Done. Note: The dependencies will not be complete if you did not call \"load complete image information\" before!!";
     }            
     
@@ -204,4 +239,39 @@ public class DockerRegistryCommands implements CommandMarker{
         
         return listOfBlobsThatAreNotReferenced;
     }            
+
+    private String constructInitialUrl() throws IOException {             
+        
+        String pathToUrlFile = LocalConfigHandler.getHomePath() + "/"
+                + LocalConfigHandler.getPathToConfigDirectory() + "/"
+                + LocalConfigHandler.getUrlFileName();
+        
+        
+        
+        System.out.println("reading default URL (from " + pathToUrlFile + ") ...");                        
+        String defaultUrl;
+        
+        try {            
+            defaultUrl =  localConfigHandler.getUrl();
+            System.out.println("set URL to: " + defaultUrl);
+        }        
+        catch (FileNotFoundException ex){
+            ConsoleReader reader = new ConsoleReader();
+            reader.println("no default URL found (file does not exist)");            
+            defaultUrl = reader.readLine("Set default URL now: ");
+            localConfigHandler.writeUrl(defaultUrl);
+        }                
+        return defaultUrl;
+    }
+    
+    private void initializeRegistry() {
+        httpInterface  = new HttpInterface(url);
+        registryCache = new RegistryCacheInMemory();
+        dependencyChecker = new BlobImageDependencyChecker();
+        
+        registry.setHttpInterface(httpInterface);
+        registry.setMapper(mapper);
+        registry.setRegistryCache(registryCache);
+        registry.setDependencyChecker(dependencyChecker);
+    }
 }
