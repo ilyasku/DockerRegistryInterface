@@ -14,7 +14,7 @@ blobs would not be part of any image anymore.
 **I developed this application as an intern at [FLAVIA IT](flavia-it.de) 
 learning some principles of software development. One of them is to write 
 clean code. To test readability of pure code, there are not many comments 
-(on purpose!). Feel free to ask me any questions on the code! (and give me hints
+(on purpose!).** Feel free to ask me any questions on the code! (and give me hints
 as to where I can improve readability ...)
 
 ## Install
