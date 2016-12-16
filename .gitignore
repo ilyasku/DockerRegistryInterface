@@ -1,0 +1,6 @@
+gradlew*
+*.log
+*~
+build
+nbproject
+.nb-gradle
