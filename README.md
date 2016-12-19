@@ -35,7 +35,7 @@ You do not need to build the docker-registry-shell locally. Instead, you can dow
 $ docker pull ilyask/docker-registry-shell
 ```
 
-##### Run a container
+#### Run a container
 
 You can create a new container by typing:
 ```
@@ -46,7 +46,7 @@ Next time you want to run the container, use **`start` instead of `run`**, like 
 ```
 docker start -i new-container-name
 ```
-##### Build image from source
+#### Build image from source
 
 The image might be outdated, but you can build one yourself with the contents from this repository instead of downloading it from the hub. Download/clone this repository. Build the application as mentioned [above](README.md#build-on-your-machine). From within the projects top-level directory, type:
 ```
@@ -61,14 +61,14 @@ Run
 
 This is a interactive command line interface based on spring shell. It allows you to get some information on the images in your registry.
 
-###### Example work-flow: list blobs of an image
+#### Example work-flow: list blobs of an image
 
 1. `set url`: use this command to point this application to your registry's [HTTP interface](https://docs.docker.com/registry/spec/api/). You can also set the URL as default. Example: `set url http://localhost:5000 --default`.
 2. `list repositories`: this command will list the names of all repositories found in your registry.
 3. `list tags of`: list tags of repositories identified in step 2. Example: `list tags of ubuntu,hello-world`. (You can specify multiple repositories as shown here, comma-separated, do not use spaces!)
 4. `list blobs of`: list blobs of images. An image needs to be specified using a repository name and a tag name, separated by a colon. Example: `list blobs of ubuntu:latest`.
 
-###### Example work-flow: list blobs not used anymore if you would delete some images
+#### Example work-flow: list blobs not used anymore if you would delete some images
 
 **Note:** This does not delete any images. So far, no deletions are implemented in `DockerRegistryInterface`.  
 Docker has finally provided a [garbage collector](https://docs.docker.com/registry/garbage-collection/), to free up disk space by deleting unused layers/blobs. This seems to work fine, but maybe you want to double check, before you delete precious images from your precious registry.
