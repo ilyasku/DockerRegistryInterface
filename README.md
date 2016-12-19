@@ -35,7 +35,7 @@ You do not need to build the docker-registry-shell locally. Instead, you can dow
 $ docker pull ilyask/docker-registry-shell
 ```
 
-###### Run a container
+##### Run a container
 
 You can create a new container by typing:
 ```
@@ -46,7 +46,7 @@ Next time you want to run the container, use **`start` instead of `run`**, like 
 ```
 docker start -i new-container-name
 ```
-###### Build image from source
+##### Build image from source
 
 The image might be outdated, but you can build one yourself with the contents from this repository instead of downloading it from the hub. Download/clone this repository. Build the application as mentioned [above](README.md#build-on-your-machine). From within the projects top-level directory, type:
 ```
