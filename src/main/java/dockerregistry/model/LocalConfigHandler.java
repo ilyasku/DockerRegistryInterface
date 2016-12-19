@@ -16,21 +16,25 @@ import java.nio.file.Paths;
 public class LocalConfigHandler {
     
     private static String homePath = System.getProperty("user.home");
-    private static String pathToConfigDirectory = ".dockerRegistryInterface";
+    private static String configDirectoryPath = ".DockerRegistryInterface";
     private static String urlFileName = "url.txt";    
+    private static String shellHistoryFileName = "shell.log";
 
     public static String getHomePath() {
         return homePath;
     }
 
-    public static String getPathToConfigDirectory() {
-        return pathToConfigDirectory;
+    public static String getConfigDirectoryPath() {
+        return configDirectoryPath;
     }
 
     public static String getUrlFileName() {
         return urlFileName;
     }
 
+    public static String getShellHistoryFileName() {
+        return shellHistoryFileName;
+    }
     
     private String url = null;
     
@@ -44,8 +48,8 @@ public class LocalConfigHandler {
     }
     
     private void loadUrl() throws FileNotFoundException, IOException{        
-        InputStream fileInputStream = new FileInputStream(getHomePath() + "/" 
-                + getPathToConfigDirectory() + "/" + getUrlFileName());
+        InputStream fileInputStream = new FileInputStream(homePath + "/" 
+                + configDirectoryPath + "/" + urlFileName);
         InputStreamReader inputStreamReader = new InputStreamReader(fileInputStream, Charset.forName("UTF-8"));
         BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
         
@@ -53,15 +57,15 @@ public class LocalConfigHandler {
     }
     
     public void writeUrl(String url) throws FileNotFoundException, UnsupportedEncodingException {        
-        PrintWriter writer = new PrintWriter(getHomePath() + "/" 
-                + getPathToConfigDirectory() + "/" + getUrlFileName(), "UTF-8");
+        PrintWriter writer = new PrintWriter(homePath + "/" 
+                + configDirectoryPath + "/" + urlFileName, "UTF-8");
         this.url = url;
         writer.print(url);
         writer.close();        
     }
 
     private void checkForConfigDirectory() throws IOException {
-        Path path = Paths.get(getHomePath() + "/" + getPathToConfigDirectory());
+        Path path = Paths.get(getHomePath() + "/" + getConfigDirectoryPath());
         if (Files.notExists(path)){            
             Files.createDirectory(path);
         }

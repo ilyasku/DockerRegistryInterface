@@ -243,7 +243,7 @@ public class DockerRegistryCommands implements CommandMarker{
     private String constructInitialUrl() throws IOException {             
         
         String pathToUrlFile = LocalConfigHandler.getHomePath() + "/"
-                + LocalConfigHandler.getPathToConfigDirectory() + "/"
+                + LocalConfigHandler.getConfigDirectoryPath() + "/"
                 + LocalConfigHandler.getUrlFileName();
         
         

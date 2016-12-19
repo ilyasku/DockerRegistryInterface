@@ -1,5 +1,6 @@
 package dockerregistry.springshell.commands;
 
+import dockerregistry.model.LocalConfigHandler;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.shell.plugin.support.DefaultHistoryFileNameProvider;
@@ -11,7 +12,11 @@ public class CustomHistoryFileNameProvider extends DefaultHistoryFileNameProvide
     
     @Override
     public String getHistoryFileName() {
-        return "shell.log";
+        
+        return LocalConfigHandler.getHomePath() + "/"
+                + LocalConfigHandler.getConfigDirectoryPath() + "/"
+                + LocalConfigHandler.getShellHistoryFileName();
+        //return "shell.log";
     }
 
     @Override
