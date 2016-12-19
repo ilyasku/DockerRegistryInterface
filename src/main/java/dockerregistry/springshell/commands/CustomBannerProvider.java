@@ -15,7 +15,7 @@ public class CustomBannerProvider extends DefaultBannerProvider  {
 		StringBuilder buf = new StringBuilder();
 		buf.append("=======================================").append(OsUtils.LINE_SEPARATOR);
 		buf.append("*                                     *").append(OsUtils.LINE_SEPARATOR);
-		buf.append("*        docker-registry-cli          *").append(OsUtils.LINE_SEPARATOR);
+		buf.append("*       docker-registry-shell         *").append(OsUtils.LINE_SEPARATOR);
 		buf.append("*                                     *").append(OsUtils.LINE_SEPARATOR);
 		buf.append("=======================================").append(OsUtils.LINE_SEPARATOR);
 		buf.append("Version:").append(this.getVersion());
@@ -29,11 +29,11 @@ public class CustomBannerProvider extends DefaultBannerProvider  {
 
         @Override
 	public String getWelcomeMessage() {
-		return "Welcome to docker-registry-cli";
+		return "Welcome to docker-registry-shell";
 	}
 	
 	@Override
 	public String getProviderName() {
-		return "docker-registry-cli Banner";
+		return "docker-registry-shell Banner";
 	}
 }
