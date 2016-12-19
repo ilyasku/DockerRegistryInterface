@@ -73,7 +73,7 @@ This is a interactive command line interface based on spring shell. It allows yo
 **Note:** This does not delete any images. So far, no deletions are implemented in `DockerRegistryInterface`.  
 Docker has finally provided a [garbage collector](https://docs.docker.com/registry/garbage-collection/), to free up disk space by deleting unused layers/blobs. This seems to work fine, but maybe you want to double check, before you delete precious images from your precious registry.
 
-1. Follow step 1-3 to set the URL and read what images are on your registry.
+1. Follow step 1-3 from section above to set the URL and read what images are on your registry.
 2. `load complete image information`: use this command to read for all images which blobs/layers are required to compose the image.
 3. `load dependencies between blobs-images`: this will build a list for each blob which image depends on it.
 4. `list blobs unreferenced after deletion of`: use this command to list which blobs would be unreferenced (no image would depend on it) if you would delete some images. Example: `list blobs unreferenced after deletion of ubuntu:latest,ubuntu:16.04,hello-world:latest`.
