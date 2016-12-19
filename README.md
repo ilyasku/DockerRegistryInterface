@@ -48,7 +48,7 @@ docker start -i new-container-name
 ```
 ###### Build image from source
 
-The image might be outdated, but you can build one yourself with the contents from this repository instead of downloading it from the hub. Download/clone this repository. Build the application as mentioned [above](build-on-your-machine). From within the projects top-level directory, type:
+The image might be outdated, but you can build one yourself with the contents from this repository instead of downloading it from the hub. Download/clone this repository. Build the application as mentioned [above](README.md#build-on-your-machine). From within the projects top-level directory, type:
 ```
 $ docker build -t docker-registry-shell .
 ```
