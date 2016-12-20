@@ -25,7 +25,7 @@ Gradle is used as build tool. Download/clone the content of this repository, nav
 ```
 $ ./gradlew installDist
 ```
-This should create a `build` folder. You should find an executable script at `build/install/DockerRegistryInterface/bin/DockerRegistryInterface`.
+This should create a `build` folder. You should find an executable script at `docker-registry-shell/build/install/docker-registry-shell/bin/docker-registry-shell`.
 Execute it to start the `docker-registry-shell` (see [below](README.md#docker-registry-shell)).
 
 ### Download as docker image

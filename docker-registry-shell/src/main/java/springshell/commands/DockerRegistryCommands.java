@@ -1,4 +1,4 @@
-package dockerregistry.springshell.commands;
+package springshell.commands;
 
 import dockerregistry.model.Blob;
 import dockerregistry.model.BlobImageDependencyChecker;
@@ -8,7 +8,7 @@ import dockerregistry.model.LocalConfigHandler;
 import dockerregistry.model.Mapper;
 import dockerregistry.model.Registry;
 import dockerregistry.model.RegistryCacheInMemory;
-import dockerregistry.springshell.ObjectToCliStringFormatter;
+import springshell.ObjectToCliStringFormatter;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;

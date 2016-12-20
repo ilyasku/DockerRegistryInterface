@@ -1,0 +1,19 @@
+apply plugin: 'application'
+
+repositories {
+  mavenCentral()
+}
+
+
+dependencies{
+  compile group: 'org.springframework.shell', name: 'spring-shell', version: '1.2.0.RELEASE'
+  compile project(':')
+}
+mainClassName = "org.springframework.shell.Bootstrap"
+
+
+defaultTasks 'installDist'
+
+run {
+  standardInput = System.in
+}

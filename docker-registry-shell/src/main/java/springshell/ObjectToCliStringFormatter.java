@@ -1,4 +1,4 @@
-package dockerregistry.springshell;
+package springshell;
 
 import dockerregistry.model.Blob;
 import dockerregistry.model.Image;

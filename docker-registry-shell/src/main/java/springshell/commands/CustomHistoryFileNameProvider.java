@@ -1,4 +1,4 @@
-package dockerregistry.springshell.commands;
+package springshell.commands;
 
 import dockerregistry.model.LocalConfigHandler;
 import org.springframework.core.Ordered;

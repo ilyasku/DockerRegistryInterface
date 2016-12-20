@@ -27,7 +27,6 @@ public class DontEverLookAtThisTest {
     public DontEverLookAtThisTest() {
     }
 
-    @Test
     public void testConnectingViaHTTP() throws MalformedURLException, IOException{
         System.out.println("--------------------------------------------------");
         System.out.println("RequesterTest: method testConnectingViaHTTP");
@@ -50,9 +49,7 @@ public class DontEverLookAtThisTest {
             System.out.println(responseBody);
         } */         
     }
- 
-    
-    @Test
+     
     public void testReadHeader() throws MalformedURLException, IOException{
         System.out.println("--------------------------------------------------");
         System.out.println("RequesterTest: method testReadHeader");
@@ -99,7 +96,6 @@ public class DontEverLookAtThisTest {
         assertEquals("nimmis-ubuntu", arrayOfRepositories[0]);        
     }
     
-    @Test
     public void testGetTagNames() throws IOException {
         System.out.println("--------------------------------------------------");
         System.out.println("RequesterTest: method testGetTagNames");
@@ -118,7 +114,6 @@ public class DontEverLookAtThisTest {
     }
     
     
-    @Test
     public void testGetHashOfManifest() throws IOException {
         System.out.println("--------------------------------------------------");
         System.out.println("RequesterTest: method testGetHashOfTag");

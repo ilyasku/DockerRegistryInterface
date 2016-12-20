@@ -1,4 +1,4 @@
-package dockerregistry.springshell.commands;
+package springshell.commands;
 
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;

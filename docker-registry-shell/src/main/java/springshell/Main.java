@@ -1,4 +1,4 @@
-package dockerregistry.springshell;
+package springshell;
 
 import java.io.IOException;
 import org.springframework.shell.Bootstrap;
