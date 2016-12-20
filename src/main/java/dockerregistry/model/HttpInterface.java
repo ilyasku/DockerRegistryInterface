@@ -25,7 +25,7 @@ public class HttpInterface {
         HttpURLConnection connection = (HttpURLConnection) new URL(urlPrefix + query).openConnection();
         connection.setRequestProperty("Accept", "application/vnd.docker.distribution.manifest.v2+json");   
         if (encodedUsernamePassword != null){
-            connection.setRequestProperty("Authorization", encodedUsernamePassword);
+            connection.setRequestProperty("Authorization", "Basic " + encodedUsernamePassword);
         }
         
         InputStream response = connection.getInputStream();        
@@ -40,7 +40,7 @@ public class HttpInterface {
         HttpURLConnection connection = (HttpURLConnection) new URL(urlPrefix + query).openConnection();
         connection.setRequestProperty("Accept", "application/vnd.docker.distribution.manifest.v2+json");
         if (encodedUsernamePassword != null){
-            connection.setRequestProperty("Authorization", encodedUsernamePassword);
+            connection.setRequestProperty("Authorization", "Basic " + encodedUsernamePassword);
         }
         
         InputStream response = connection.getInputStream();        
@@ -55,7 +55,7 @@ public class HttpInterface {
         HttpURLConnection connection = (HttpURLConnection) new URL(urlPrefix + query).openConnection();
         connection.setRequestProperty("Accept", "application/vnd.docker.distribution.manifest.v2+json");        
         if (encodedUsernamePassword != null){
-            connection.setRequestProperty("Authorization", encodedUsernamePassword);
+            connection.setRequestProperty("Authorization", "Basic " + encodedUsernamePassword);
         }
         
         String[] manifestHashAndManifestContent = new String[2];        
@@ -69,5 +69,27 @@ public class HttpInterface {
         manifestHashAndManifestContent[1] = manifestResponseBody;
         
         return manifestHashAndManifestContent;                                      
-    }    
+    }
+    
+    public void deleteImage(String repositoryName, String manifestHash) throws MalformedURLException, IOException{
+        String query = String.format("/v2/%s/manifests/%s", repositoryName, manifestHash);        
+        HttpURLConnection connection = (HttpURLConnection) new URL(urlPrefix + query).openConnection();
+        connection.setRequestProperty("Accept", "application/vnd.docker.distribution.manifest.v2+json");
+        if (encodedUsernamePassword != null){
+            connection.setRequestProperty("Authorization", "Basic " + encodedUsernamePassword);
+        }
+        connection.setRequestMethod("DELETE");
+        connection.connect();
+    }
+    
+    public void deleteBlob(String repositoryName, String blobHash) throws MalformedURLException, IOException{
+        String query = String.format("/v2/%s/manifests/%s", repositoryName, blobHash);
+        HttpURLConnection connection = (HttpURLConnection) new URL(urlPrefix + query).openConnection();
+        connection.setRequestProperty("Accept", "application/vnd.docker.distribution.manifest.v2+json");
+        if (encodedUsernamePassword != null){
+            connection.setRequestProperty("Authorization", "Basic " + encodedUsernamePassword);
+        }
+        connection.setRequestMethod("DELETE");
+        connection.connect();
+    }
 }

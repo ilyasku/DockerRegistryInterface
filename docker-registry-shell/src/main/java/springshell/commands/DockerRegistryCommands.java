@@ -96,8 +96,8 @@ public class DockerRegistryCommands implements CommandMarker{
         String base64encodedCredentials = Base64.getEncoder().encodeToString(usernamePassword.getBytes());
         encodedUsernamePassword = base64encodedCredentials;
         httpInterface.setEncodedUsernamePassword(encodedUsernamePassword);        
-        return "Credentials set.";
-    }
+        return "Credentials set.";         
+    }        
     
     @CliCommand(value = "list repositories", help = "List names of all repositories")
     public String listRepositoryNames(){
@@ -159,6 +159,27 @@ public class DockerRegistryCommands implements CommandMarker{
         return returnString;
     }
 
+    @CliCommand(value = "delete image", help = "Deletes an image from the registry via Docker Registry HTTP API v2")
+    public String deleteImage(@CliOption(key = {"", "image-names"}, mandatory = true,
+                    help = "Names of images you want to delete.\n"
+                            +"Note that an image name needs to have the format \"repoName:tagName\".\n")
+                    String[] imageNames) throws IOException{
+        for (String imageName: imageNames){
+            Image image = registry.getImageByName(imageName);
+            // HTTP API requires image hash for deletion (not its tag)
+            String imageHash = image.getManifest().getManifestBlob().getHash();
+            registry.deleteImageFromRegistry(image.getRepoName(), imageHash);
+        }
+        return "Done.";
+    }
+    
+    @CliCommand(value = "delete blob", help = "Deletes a blob. BE CAREFUL: multiple images might depend on a single blob.")
+    public String deleteBlob(@CliOption(key = {"", "blob-hashes"}, 
+            help = "Hashes of blobs you want to delete.")
+            String[] blobHashes) {
+        return "Not implemented yet";
+    }
+    
     private String getRegistryCacheInfo() {
         String returnString = "";
         Map<String, Image> imageMap = registry.getMapOfImages();
