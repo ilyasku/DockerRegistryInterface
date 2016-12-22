@@ -53,12 +53,18 @@ public class Registry {
         return dependencyChecker.getDependencyMapWithImagesDeleted(namesOfImagesConsideredDeleted);
     }
     
-    public void deleteImageFromRegistry(String repositoryName, String manifestHash) throws IOException{
-        httpInterface.deleteImage(repositoryName, manifestHash);        
+    /**
+     * @return HTTP ReponseCode of DELETE request.
+     */
+    public int deleteImageFromRegistry(String repositoryName, String manifestHash) throws IOException{
+        return httpInterface.deleteImage(repositoryName, manifestHash);        
     }
     
-    public void deleteBlobFromRegistry(String repositoryName, String blobHash) throws IOException {
-        httpInterface.deleteBlob(repositoryName, blobHash);
+    /**
+     * @return HTTP ResponseCode of DELETE request.
+     */
+    public int deleteBlobFromRegistry(String repositoryName, String blobHash) throws IOException {
+        return httpInterface.deleteBlob(repositoryName, blobHash);
     }
     
     public Image getImageByName(String imageName) throws IOException {

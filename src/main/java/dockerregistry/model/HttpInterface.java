@@ -71,25 +71,35 @@ public class HttpInterface {
         return manifestHashAndManifestContent;                                      
     }
     
-    public void deleteImage(String repositoryName, String manifestHash) throws MalformedURLException, IOException{
+    public int deleteImage(String repositoryName, String manifestHash) throws MalformedURLException, IOException{
         String query = String.format("/v2/%s/manifests/%s", repositoryName, manifestHash);        
         HttpURLConnection connection = (HttpURLConnection) new URL(urlPrefix + query).openConnection();
-        connection.setRequestProperty("Accept", "application/vnd.docker.distribution.manifest.v2+json");
+        connection.setRequestProperty("Accept", "application/vnd.docker.distribution.manifest.v2+json");        
         if (encodedUsernamePassword != null){
             connection.setRequestProperty("Authorization", "Basic " + encodedUsernamePassword);
         }
+        // configure for DELETE
+        connection.setDoOutput(true);
+        connection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
         connection.setRequestMethod("DELETE");
+        // send request
         connection.connect();
+        return connection.getResponseCode();
     }
     
-    public void deleteBlob(String repositoryName, String blobHash) throws MalformedURLException, IOException{
-        String query = String.format("/v2/%s/manifests/%s", repositoryName, blobHash);
+    public int deleteBlob(String repositoryName, String blobHash) throws MalformedURLException, IOException{
+        String query = String.format("/v2/%s/blobs/%s", repositoryName, blobHash);
         HttpURLConnection connection = (HttpURLConnection) new URL(urlPrefix + query).openConnection();
         connection.setRequestProperty("Accept", "application/vnd.docker.distribution.manifest.v2+json");
         if (encodedUsernamePassword != null){
             connection.setRequestProperty("Authorization", "Basic " + encodedUsernamePassword);
         }
+        // configure for DELETE
+        connection.setDoOutput(true);
+        connection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
         connection.setRequestMethod("DELETE");
+        // send request
         connection.connect();
+        return connection.getResponseCode();
     }
 }

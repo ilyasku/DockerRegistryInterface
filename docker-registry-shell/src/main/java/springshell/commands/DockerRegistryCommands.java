@@ -30,7 +30,7 @@ import org.springframework.stereotype.Component;
 public class DockerRegistryCommands implements CommandMarker{
     
     private boolean completeImageInfoLoaded = false;
-    private boolean dependencyMapBuild = false;
+    private boolean dependencyMapBuilt = false;
     
     
     private LocalConfigHandler localConfigHandler = new LocalConfigHandler();
@@ -51,14 +51,14 @@ public class DockerRegistryCommands implements CommandMarker{
         initializeRegistry();
     }    
     
-    @CliAvailabilityIndicator({"load dependencies between blobs-images"})
+    @CliAvailabilityIndicator({"load dependencies-between-blobs-and-images"})
     public boolean isLoadDependenciesAvailable(){
         return completeImageInfoLoaded;
     }
     
-    @CliAvailabilityIndicator({"list blobs unreferenced after deletion of"})
+    @CliAvailabilityIndicator({"list blobs unreferenced-after-deletion-of-images", "list images depending-on-blob"})
     public boolean isListBlobsUnreferencedAvailable(){
-        return completeImageInfoLoaded && dependencyMapBuild;
+        return completeImageInfoLoaded && dependencyMapBuilt;
     }
     
     
@@ -66,11 +66,13 @@ public class DockerRegistryCommands implements CommandMarker{
     @CliCommand(value = "set url", help = "Set URL of the repository you want to connect to.")
     public String setUrl(
             @CliOption(key = {"","url"}, mandatory = true, 
-                    help = "URL of repository you want to connect to") String url,
+                    help = "URL of repository you want to connect to") 
+                    String url,
             @CliOption(key = {"default", "set-as-default"}, mandatory = false,
                     help = "set this URL as default (this URL will be used on next start of the docker-registry-shell)",
                     specifiedDefaultValue = "true",
-                    unspecifiedDefaultValue = "false") String makeDefault){
+                    unspecifiedDefaultValue = "false") 
+                    String makeDefault){
         this.url = url;
         httpInterface = new HttpInterface(this.url);
         if (encodedUsernamePassword != null){
@@ -115,10 +117,11 @@ public class DockerRegistryCommands implements CommandMarker{
         }                
     }    
     
-    @CliCommand(value = "list tags of", help = "List tag names of given repositories.")
+    @CliCommand(value = "list tags", help = "List tag names of given repositories.")
     public String listTagNames(
-    @CliOption(key = {"", "repository-names"}, mandatory = true, 
-            help = "name of repository for which you want to see tags") String[] repositoryNames) throws IOException{
+            @CliOption(key = {"", "repository-names"}, mandatory = true, 
+                    help = "name of repository for which you want to see tags") 
+                    String[] repositoryNames) throws IOException{
         String returnString = "";
         
         for (String repositoryName: repositoryNames){
@@ -133,7 +136,7 @@ public class DockerRegistryCommands implements CommandMarker{
         return returnString;        
     }
     
-    @CliCommand(value = "list blobs of", help = "List blobs of given images.")
+    @CliCommand(value = "list blobs", help = "List blobs of given images.")
     public String listBlobs(
             @CliOption(key = {"", "image-names"}, mandatory = true,
                     help = "Names of images you want to get the blobs listed of.\n"
@@ -160,24 +163,47 @@ public class DockerRegistryCommands implements CommandMarker{
     }
 
     @CliCommand(value = "delete image", help = "Deletes an image from the registry via Docker Registry HTTP API v2")
-    public String deleteImage(@CliOption(key = {"", "image-names"}, mandatory = true,
+    public String deleteImage(
+            @CliOption(key = {"", "image-names"}, mandatory = true,
                     help = "Names of images you want to delete.\n"
                             +"Note that an image name needs to have the format \"repoName:tagName\".\n")
-                    String[] imageNames) throws IOException{
+                    String[] imageNames){
+        String returnString = "";
         for (String imageName: imageNames){
-            Image image = registry.getImageByName(imageName);
-            // HTTP API requires image hash for deletion (not its tag)
-            String imageHash = image.getManifest().getManifestBlob().getHash();
-            registry.deleteImageFromRegistry(image.getRepoName(), imageHash);
+            returnString += "Deleting image \"" + imageName + "\". "; 
+            try{                
+                Image image = registry.getImageByName(imageName);
+                // HTTP API requires image hash for deletion (not its tag)
+                String imageHash = image.getManifest().getManifestBlob().getHash();
+                int responseCode = registry.deleteImageFromRegistry(image.getRepoName(), imageHash);
+                returnString += " Response Code = " + responseCode + ".\n";
+            } 
+            catch (Exception ex) {
+                Logger.getLogger(DockerRegistryCommands.class.getName()).log(Level.SEVERE, null, ex);
+                returnString += " Caused Exception with message: " + ex.getMessage() + "\n";
+            }
+            
         }
-        return "Done.";
+        return returnString;
     }
     
-    @CliCommand(value = "delete blob", help = "Deletes a blob. BE CAREFUL: multiple images might depend on a single blob.")
-    public String deleteBlob(@CliOption(key = {"", "blob-hashes"}, 
-            help = "Hashes of blobs you want to delete.")
-            String[] blobHashes) {
-        return "Not implemented yet";
+    @CliCommand(value = "delete blob", help = "Deletes a blob.")
+    public String deleteBlob(
+            @CliOption(key = {"", "blob-hash"}, 
+                    help = "Hash of blobs you want to delete.",
+                    mandatory = true)
+                    String blobHash,
+            @CliOption(key = {"", "repository-name"}, 
+                    help = "Name of repository with an image depending on given blob.",
+                    mandatory = true) 
+                    String repositoryName) {        
+        try {
+            int responseCode = registry.deleteBlobFromRegistry(repositoryName, blobHash);
+            return "Done. HTTP Response Code: " + responseCode;
+        } catch (IOException ex) {
+            Logger.getLogger(DockerRegistryCommands.class.getName()).log(Level.SEVERE, null, ex);
+            return "ERROR: " + ex.getMessage();
+        }                   
     }
     
     private String getRegistryCacheInfo() {
@@ -189,7 +215,7 @@ public class DockerRegistryCommands implements CommandMarker{
         return returnString;
     }
     
-    @CliCommand(value = {"load complete image information"},
+    @CliCommand(value = {"load complete-image-information"},
             help = "Reads information on all images (what blobs are required for an image) from registry at specified URL." )
     public String loadCompleteInformation() throws IOException{
         registry.loadAllImagesToRegistryCache();
@@ -200,18 +226,21 @@ public class DockerRegistryCommands implements CommandMarker{
     }
     
     
-    @CliCommand(value = "load dependencies between blobs-images", help ="Loads information for every blob which images depend on it.\n"
+    @CliCommand(value = "load dependencies-between-blobs-and-images", help ="Loads information for every blob which images depend on it.\n"
             + "This information will not be complete, unless you called \"load complete image information\" before!!")
     public String loadDependenciesWhichImagesDependOnWhichBlobs(){        
         registry.buildDependencyMapOfBlobsAndImages();
-        dependencyMapBuild = true;
+        dependencyMapBuilt = true;
         return "Done. Note: The dependencies will not be complete if you did not call \"load complete image information\" before!!";
     }            
     
-    @CliCommand(value = "list blobs unreferenced after deletion of", 
+    @CliCommand(value = "list blobs unreferenced-after-deletion-of-images", 
             help = "Prints a list of blobs that would be unreferenced if you would delete the images specified.")
     public String getUnreferencedBlobsIfImagesWouldBeDeleted(
-            @CliOption(key = {"", "names-of-images-considered-deleted"}, mandatory = true, help = "list of image names considered deleted for this request")String[] imageNames){
+            @CliOption(key = {"", "names-of-images-considered-deleted"}, 
+                    mandatory = true, 
+                    help = "list of image names considered deleted for this request")
+                    String[] imageNames){
         String returnString = "Blobs that would be unreferenced:\n";
         
         Map<String, List<String>> dependencyMapWithImagesDeleted = registry.getDependencyMapOfBlobsAndImagesIfImagesWouldBeDeleted(imageNames);
@@ -224,9 +253,12 @@ public class DockerRegistryCommands implements CommandMarker{
         return returnString;
     }
 
-    @CliCommand(value = "list images depending on", help = "List all images that depend on given blob.")
+    @CliCommand(value = "list images depending-on-blob", help = "List all images that depend on given blob.")
     public String getImagesDependingOnBlob(
-    @CliOption(key = {"", "blob-name"}, mandatory = true, help = "name of the blob you want to see the dependencies of") String blobHash) {
+            @CliOption(key = {"", "blob-name"}, 
+                    mandatory = true, 
+                    help = "name of the blob you want to see the dependencies of") 
+                    String blobHash) {
         String returnString = "";
         
         Map<String, List<String>> dependencyMap = registry.getDependencyMapOfBlobsAndImages();
@@ -239,10 +271,6 @@ public class DockerRegistryCommands implements CommandMarker{
         }
         else {
             returnString = returnString + "Sorry! No Blob by that Hash in the dependency map.\n";
-            returnString = returnString + "You need to run commands\n";
-            returnString = returnString + "  > load complete image information\n";
-            returnString = returnString + "  > load dependencies between blobs-images\n";
-            returnString = returnString + "to build the complete map!";
         }                
         return returnString;
     }

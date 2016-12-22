@@ -34,6 +34,6 @@ public class CustomBannerProvider extends DefaultBannerProvider  {
 	
 	@Override
 	public String getProviderName() {
-		return "docker-registry-shell Banner";
+		return "docker-registry-shell";
 	}
 }
