@@ -19,6 +19,7 @@ public class LocalConfigHandler {
     private static String configDirectoryPath = ".DockerRegistryInterface";
     private static String urlFileName = "url.txt";    
     private static String shellHistoryFileName = "shell.log";
+    private static String credentialsFileName = ".credentials.txt";
 
     public static String getHomePath() {
         return homePath;
@@ -35,11 +36,19 @@ public class LocalConfigHandler {
     public static String getShellHistoryFileName() {
         return shellHistoryFileName;
     }
+
+    public static String getCredentialsFileName() {
+        return credentialsFileName;
+    }
     
     private String url = null;
     
     public LocalConfigHandler() throws IOException{
         checkForConfigDirectory();
+    }
+    
+    public String getCredentials() throws IOException, FileNotFoundException{
+        return readCredentials();
     }
     
     public String getUrl() throws FileNotFoundException, IOException{
@@ -53,7 +62,7 @@ public class LocalConfigHandler {
         InputStreamReader inputStreamReader = new InputStreamReader(fileInputStream, Charset.forName("UTF-8"));
         BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
         
-        url = bufferedReader.readLine();        
+        url = bufferedReader.readLine();
     }
     
     public void writeUrl(String url) throws FileNotFoundException, UnsupportedEncodingException {        
@@ -63,7 +72,14 @@ public class LocalConfigHandler {
         writer.print(url);
         writer.close();        
     }
-
+    
+    public void writeCredentials(String encodedCredentials) throws FileNotFoundException, UnsupportedEncodingException {
+        PrintWriter writer = new PrintWriter(homePath + "/" 
+                + configDirectoryPath + "/" + credentialsFileName, "UTF-8");
+        writer.print(encodedCredentials);
+        writer.close();        
+    }
+            
     private void checkForConfigDirectory() throws IOException {
         Path path = Paths.get(getHomePath() + "/" + getConfigDirectoryPath());
         if (Files.notExists(path)){            
@@ -71,4 +87,14 @@ public class LocalConfigHandler {
         }
     }
     
+
+
+    private String readCredentials() throws FileNotFoundException, IOException {
+        InputStream fileInputStream = new FileInputStream(homePath + "/" 
+                + configDirectoryPath + "/" + credentialsFileName);
+        InputStreamReader inputStreamReader = new InputStreamReader(fileInputStream, Charset.forName("UTF-8"));
+        BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
+        
+        return bufferedReader.readLine();
+    }    
 }

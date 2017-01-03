@@ -1,0 +1,22 @@
+apply plugin: 'application'
+
+repositories {
+  mavenCentral()
+}
+
+
+dependencies{
+    compile project(':')
+  
+    testCompile('junit:junit:4.12')           
+    testCompile group: 'org.mockito', name: 'mockito-all', version: '1.10.19'
+}
+
+mainClassName = "cli.CommandLineInterface"
+
+
+defaultTasks 'installDist'
+
+run {
+  standardInput = System.in
+}
