@@ -2,7 +2,7 @@ package cli.parser;
 
 public enum ConnectionOptionType {
     
-    REGISTRY_URL("registry-url"), USER_NAME("user-name"), CREDENTIALS_FILE("credentials-file");
+    REGISTRY_URL("registry-url"), USER_NAME("user-name");
         
     private String humanReadableName;
     

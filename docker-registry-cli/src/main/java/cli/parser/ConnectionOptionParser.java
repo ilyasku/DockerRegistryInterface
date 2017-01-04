@@ -14,10 +14,7 @@ public class ConnectionOptionParser {
         CONNECTION_OPTIONS.put("--registry-url", ConnectionOptionType.REGISTRY_URL);
         CONNECTION_OPTIONS.put("-u", ConnectionOptionType.USER_NAME);
         CONNECTION_OPTIONS.put("--user-name", ConnectionOptionType.USER_NAME);
-        CONNECTION_OPTIONS.put("--username", ConnectionOptionType.USER_NAME);
-        CONNECTION_OPTIONS.put("-c", ConnectionOptionType.CREDENTIALS_FILE);
-        CONNECTION_OPTIONS.put("--credentials", ConnectionOptionType.CREDENTIALS_FILE);
-        CONNECTION_OPTIONS.put("--credentials-file", ConnectionOptionType.CREDENTIALS_FILE);        
+        CONNECTION_OPTIONS.put("--username", ConnectionOptionType.USER_NAME);      
     }
     
     
