@@ -4,7 +4,6 @@ import cli.parser.ConnectionOptionType;
 import dockerregistry.model.HttpInterface;
 import dockerregistry.model.LocalConfigHandler;
 import dockerregistry.model.Registry;
-import exceptions.WrongNumberOfArgumentsForThisCommandException;
 import java.io.ByteArrayInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -82,80 +81,13 @@ public class CommandExecutorTest {
         commandExecutor.setHttpInterface(mockHttpInterface);
         commandExecutor.setLocalConfigHandler(mockLocalConfigHandler);
         
-        String[] response = commandExecutor.executeListRepositories(connectionOptions);
+        String[] response = commandExecutor.executeListRepositories();
         
         assertTrue(response.length == 3);
         assertTrue(response[0].equals("ubuntu"));
         assertTrue(response[1].equals("whalesay"));
         assertTrue(response[2].equals("busybox"));
-    }
-    
-    @Test
-    public void testExecute_listRepositoriesCommand_withOptionRegistry() throws UnsupportedEncodingException, IOException {
-        System.out.println("------------------------------------------------------------");
-        System.out.println("test: method testExecute_listRepositoriesCommand_withOptionRegistry");
-        
-        Map<ConnectionOptionType, String> connectionOptions = new HashMap<>();
-        connectionOptions.put(ConnectionOptionType.REGISTRY_URL, "http://localhost:5000");
-        
-        // mocking dependencies
-        String[] mockRepositoryNames = new String[]{"ubuntu", "whalesay", "busybox"};        
-        Registry mockRegistry = mock(Registry.class);
-        when(mockRegistry.getRepositoryNames()).thenReturn(mockRepositoryNames);
-        HttpInterface mockHttpInterface = mock(HttpInterface.class); 
-        Mockito.doNothing().when(mockHttpInterface).setEncodedUsernamePassword(Matchers.anyString());
-        LocalConfigHandler mockLocalConfigHandler = mock(LocalConfigHandler.class);
-        when(mockLocalConfigHandler.getUrl()).thenReturn("mock my life");
-        when(mockLocalConfigHandler.getCredentials()).thenReturn("mock my life");
-        
-        CommandExecutor commandExecutor = new CommandExecutor();        
-        commandExecutor.setRegistry(mockRegistry);
-        commandExecutor.setHttpInterface(mockHttpInterface);
-        commandExecutor.setLocalConfigHandler(mockLocalConfigHandler);
-        
-        String[] response = commandExecutor.executeListRepositories(connectionOptions);
-        
-        assertTrue(response.length == 3);
-        assertTrue(response[0].equals("ubuntu"));
-        assertTrue(response[1].equals("whalesay"));
-        assertTrue(response[2].equals("busybox"));
-    }
-
-    @Ignore
-    @Test
-    public void testExecute_listRepositoriesCommand_withOptionUsername() throws UnsupportedEncodingException, IOException {
-        System.out.println("------------------------------------------------------------");
-        System.out.println("test: method testExecute_listRepositoriesCommand_withOptionUsername");
-        
-        Map<ConnectionOptionType, String> connectionOptions = new HashMap<>();
-        connectionOptions.put(ConnectionOptionType.USER_NAME, "testuser");
-        
-        // mocking dependencies
-        String[] mockRepositoryNames = new String[]{"ubuntu", "whalesay", "busybox"};        
-        Registry mockRegistry = mock(Registry.class);
-        when(mockRegistry.getRepositoryNames()).thenReturn(mockRepositoryNames);
-        HttpInterface mockHttpInterface = mock(HttpInterface.class); 
-        Mockito.doNothing().when(mockHttpInterface).setEncodedUsernamePassword(Matchers.anyString());
-        LocalConfigHandler mockLocalConfigHandler = mock(LocalConfigHandler.class);
-        when(mockLocalConfigHandler.getUrl()).thenReturn("mock my life");
-        when(mockLocalConfigHandler.getCredentials()).thenReturn("mock my life");
-        
-        ByteArrayInputStream in = new ByteArrayInputStream("testpassword".getBytes());
-        System.setIn(in);                
-        
-        CommandExecutor commandExecutor = new CommandExecutor();        
-        commandExecutor.setRegistry(mockRegistry);
-        commandExecutor.setHttpInterface(mockHttpInterface);
-        commandExecutor.setLocalConfigHandler(mockLocalConfigHandler);                
-        
-        String[] response = commandExecutor.executeListRepositories(connectionOptions);
-        System.setIn(System.in);
-         
-        assertTrue(response.length == 3);
-        assertTrue(response[0].equals("ubuntu"));
-        assertTrue(response[1].equals("whalesay"));
-        assertTrue(response[2].equals("busybox"));
-    }
+    }    
     
     @Test
     public void testExecute_listTagsCommand() throws IOException {
@@ -182,7 +114,20 @@ public class CommandExecutorTest {
         commandExecutor.setHttpInterface(mockHttpInterface);
         commandExecutor.setLocalConfigHandler(mockLocalConfigHandler);
         
-        Map<String, List<String>> response = commandExecutor.executeListTags();                
+        Map<String, String[]> response = commandExecutor.executeListTags(repositories);
+
+        assertTrue(response.size() == 2);
+        assertTrue(response.get("ubuntu").length == 2);
+        assertTrue(response.get("whalesay").length == 3);
+        
+        List<String> tagNamesUbuntuAsArray = Arrays.asList(response.get("ubuntu"));
+        assertTrue(tagNamesUbuntuAsArray.contains("latest"));
+        assertTrue(tagNamesUbuntuAsArray.contains("1"));
+        
+        List<String> tagNamesWhalesayAsArray = Arrays.asList(response.get("whalesay"));
+        assertTrue(tagNamesWhalesayAsArray.contains("latest"));
+        assertTrue(tagNamesWhalesayAsArray.contains("5"));
+        assertTrue(tagNamesWhalesayAsArray.contains("7"));
         
     }
 }
