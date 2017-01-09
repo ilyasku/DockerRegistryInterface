@@ -6,4 +6,7 @@ public class WrongNumberOfArgumentsForThisCommandException extends RuntimeExcept
         super(Integer.toString(numberOfExpectedArguments));
     }
             
+    public WrongNumberOfArgumentsForThisCommandException(String numberOfExpectedArguments){
+        super(numberOfExpectedArguments);
+    }
 }

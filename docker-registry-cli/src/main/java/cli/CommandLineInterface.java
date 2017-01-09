@@ -3,9 +3,11 @@ package cli;
 import cli.parser.ConnectionOptionType;
 import cli.parser.Parser;
 import dockerregistry.model.HttpInterface;
+import dockerregistry.model.Image;
 import dockerregistry.model.LocalConfigHandler;
 import dockerregistry.model.Mapper;
 import dockerregistry.model.Registry;
+import dockerregistry.model.RegistryCacheInMemory;
 import exceptions.InvalidCommandException;
 import exceptions.WrongNumberOfArgumentsForThisCommandException;
 import java.io.BufferedReader;
@@ -35,31 +37,40 @@ public class CommandLineInterface {
     public CommandLineInterface(){        
     }
     
-    public static void main(String[] args){
-        String stringToPrint = "";
+    public static void main(String[] args){        
         
         Command command = Parser.parseCompleteCommand(args);
         try{
-            stringToPrint += execute(command);
+            execute(command);
         }
         catch (WrongNumberOfArgumentsForThisCommandException ex){
-            
+            // @TODO: human-readable Exception ...
         } catch (IOException ex) {
             Logger.getLogger(CommandLineInterface.class.getName()).log(Level.SEVERE, null, ex);
-        }                                    
-                
-        System.out.print(stringToPrint);
+        }                                                            
     }
     
-    private static String execute(Command command) throws IOException{
+    private static void execute(Command command) throws IOException{
         
         String returnString = "";
         
+        
+        HttpInterface httpInterface;
+        if (command.getCommandString().equals("set-url")){
+            // url of the interface is irrelevant here, will be overwritten
+            // anyway, and no HTTP request will be done in this case
+            httpInterface = new HttpInterface("dummie");
+        }
+        else{
+            httpInterface = initializeHttpInterface(command.getConnectionOptions());
+        }
+                
         // set-up dependencies
-        HttpInterface httpInterface = initializeHttpInterface(command.getConnectionOptions());
         Mapper mapper = new Mapper();
+        RegistryCacheInMemory registryCache = new RegistryCacheInMemory();
         Registry registry = new Registry();
         registry.setMapper(mapper);
+        registry.setRegistryCache(registryCache);
         CommandExecutor commandExecutor = new CommandExecutor();
         commandExecutor.setRegistry(registry);
         commandExecutor.setHttpInterface(httpInterface);
@@ -90,7 +101,7 @@ public class CommandLineInterface {
         }
         else if (commandString.equals("list-tags")) {
             if (command.getCommandArgs().isEmpty()){
-                throw new WrongNumberOfArgumentsForThisCommandException(0);
+                throw new WrongNumberOfArgumentsForThisCommandException(">0");
             }
             Map<String, String[]> tagNames = commandExecutor.executeListTags(command.getCommandArgs());
             for (String repositoryName : tagNames.keySet()){
@@ -101,11 +112,17 @@ public class CommandLineInterface {
                     returnString += tagName + "\n";
                 }
             }            
-        }        
+        }
+        else if (commandString.equals("delete-images")) {
+            if (command.getCommandArgs().isEmpty()){
+                throw new WrongNumberOfArgumentsForThisCommandException(">0");
+            }
+            commandExecutor.executeDeleteImages(command.getCommandArgs());
+        }
         else{
             throw new InvalidCommandException(commandString);
         }
-        return returnString;
+        System.out.print(returnString);
     }    
     
     private static String getUrl(Map<ConnectionOptionType, String> connectionOptions) throws IOException {

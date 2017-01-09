@@ -1,21 +1,13 @@
 # DockerRegistryInterface
 
-Small piece of software to read information from a Docker registry.  
-So far it is really limited to read-only. The idea is to comfortably read:
-* what repositories are in the registry
-* what are the tags of images in a repository
-* what image layers (blobs) compose an image
+Small piece of software to read information from a Docker registry and delete images.  
+The idea is to comfortably:
+* read what repositories are in the registry
+* read what are the tags of images in a repository
+* read what image layers (blobs) compose an image
+* delete images from the registry
 
-In addition, there is one bit more advanced feature that lets you list blobs
-that you can safely delete if you would delete certain images. I.e., which 
-blobs would not be part of any image anymore.
-
-## Important note:
-**I developed this application as an intern at [FLAVIA IT](flavia-it.de) 
-learning some principles of software development. One of them is to write 
-clean code. To test readability of pure code, there are not many comments 
-(on purpose!).** Feel free to ask me any questions on the code. (and give me hints
-where I can improve readability ...)
+To do so, this interface communicates with a registry via its [HTTP API v2](https://docs.docker.com/registry/spec/api/).
 
 ## Install
 
@@ -25,12 +17,12 @@ Gradle is used as build tool. Download/clone the content of this repository, nav
 ```
 $ ./gradlew installDist
 ```
-This should create a `build` folder. You should find an executable script at `docker-registry-shell/build/install/docker-registry-shell/bin/docker-registry-shell`.
-Execute it to start the `docker-registry-shell` (see [below](README.md#docker-registry-shell)).
+This should creates `build` folders in the top-level folder as well as in the sub-projects `docker-registry-cli` and `docker-registry-shell`. You should find executable scripts in the sub-project folders, e.g. `docker-registry-cli/build/install/docker-registry-cli/bin/docker-registry-cli`.  
+Execute it to use the `docker-registry-cli` (see [below](README.md#docker-registry-cli)). There should be an executable following the same path pattern for the `docker-registry-shell`.
 
 ### Download as docker image
 
-You do not need to build the docker-registry-shell locally. Instead, you can download a docker image containing it. Type:
+You do not need to build the `docker-registry-shell` locally. Instead, you can download a docker image containing it. Type:
 ```
 $ docker pull ilyask/docker-registry-shell
 ```
@@ -39,16 +31,17 @@ $ docker pull ilyask/docker-registry-shell
 
 You can create a new container by typing:
 ```
-$ docker run --name new-container-name -ti ilyask/docker-registry-interface
+$ docker run --name new-container-name -ti ilyask/docker-registry-shell
 ```
 This creates a new container and the `docker-registry-shell` will not have a default URL set. It will ask you to set one now.
 Next time you want to run the container, use **`start` instead of `run`**, like so:
 ```
 docker start -i new-container-name
 ```
+
 #### Build image from source
 
-The image might be outdated, but you can build one yourself with the contents from this repository instead of downloading it from the hub. Download/clone this repository. Build the application as mentioned [above](README.md#build-on-your-machine). From within the projects top-level directory, type:
+The image might be outdated, but you can build one yourself with the contents from this repository instead of downloading it from the hub. Download/clone this repository. Build the application as mentioned [above](README.md#build-on-your-machine). From within the `docker-registry-shell` sub-project directory, type:
 ```
 $ docker build -t docker-registry-shell .
 ```
@@ -56,6 +49,82 @@ This should add the image named `docker-registry-shell` to your local collection
 Run
 
 ## User interfaces
+
+You currently have 2 options here: a plain command line interface, `docker-registry-cli`, and an interactive one, `docker-registry-shell`. I first created the interactive one, before I knew docker implemented a working garbage collector for registries by now. **I recommend using the plain** `docker-registry-cli`, I really see no point in using the interactive shell instead.
+
+### docker-registry-cli
+
+You can execute this script with different arguments to read some info from your registry or delete images. Running the script with arguments should follow this syntax:
+```
+path/to/executable/script/docker-registry-cli <connection-options> <command> <command-arguments>
+```
+Connection options are optional, while a command is always required. Additionally, some commands require command arguments. This is described in the following sections in more detail.
+
+#### Example workflow
+
+When you use the `docker-registry-cli` for the first time, you should add the `bin` folder to your `PATH`, such that  you can run it from anywhere on your system. Next, you should set a default URL of a registry, for example to a local registry:
+```
+$ docker-registry-cli set-url http://localhost:5000
+```
+If your registry requires credentials to log in, you might also want to set default credentials:
+```
+$ docker-registry-cli set-credentials
+```
+This will prompt you to enter username and password. These defaults will be used if no connection options are provided.
+Next, you might want to figure our what repositories are on your registry. List their names with:
+```
+$ docker-registry-cli list-repositories
+```
+You might want to know what images are present for a repository named "ubuntu". Images are identified by a repository and a tag name, so you would want to list the tags of the repository "ubuntu":
+```
+$ docker-registry-cli list-tags ubuntu
+```
+Let's say there are a few images with tags "1204" and "1404" that you don't want to store on your registry any longer. Type:
+```
+$ docker-registry-cli delete-images ubuntu:1204 ubuntu:1404
+```
+These images can not be pulled from your registry any longer, but this *delete* won't free up any disk space. To free up space, you would need to run the garbage collector of your registry. You can run it as in the "Run the GC" step of [this](http://stackoverflow.com/a/40293994/5829566) answer. (This requires access to the docker container!)
+
+#### Commands
+
+###### set-url
+* **Number of expected command arguments**: 1
+  1. URL of a registry.
+* **Description**: Sets the default URL to the one provided as argument.
+* **Example**: `$ docker-registry-cli set-url http://localhost:5000`
+
+###### set-credentials
+* **Number of expected command arguments**: 0
+* **Description**: Stores your credentials locally, so you don't have to type them in over and over again. If you don't want your credentials stored locally, do not use this command. Instead, always use the `--username` or `-u` option on every call.
+* **Example**: `$ docker-registry-cli set-credentials` -> this will prompt you to type in username and password.
+
+###### list-repositories
+* **Number of expected command arguments**: 0
+* **Description**: Reads the repository names from the registry via HTTP and prints them.
+* **Example**: `$ docker-registry-cli list-repositories`
+
+###### list-tags
+* **Number of expected command arguments**: >= 1
+  * Arbitrary number of repository names, separated by spaces.
+* **Description**: Reads tags of given repositories via HTTP and prints them.
+* **Example**: `$ docker-registry-cli list-tags ubuntu hello-world whalesay` -> this will print all tags under repositories named "ubuntu", "hello-world" and "whalesay".
+
+###### delete-images
+* **Number of expected command arguments**: >= 1
+  * Arbitrary number of image names, separated by spaces. An image name consists of a repository name and a tag name, separated by a colon, e.g. "ubuntu:1604"
+* **Description**: Deletes given images via the registry's HTTP interface.
+* **Example**: `$ docker-registry-cli delete-images ubuntu:1404 ubuntu:1604 whalesay:latest`
+
+#### Connection options
+If you have no default URL or credentials set via `set-url` or `set-credentials` commands, or if you want to use an URL or credentials different from the default ones, you can use connection options.
+
+###### **--registry-url** or **--registry** or **-r**
+Uses the following argument as URL for this command.
+**Example**: `$ docker-registry-cli -r http://registry.my-server.com list-repositories`
+
+###### **--user-name** or **--username** or **-u**
+Uses the argument that follows as user name for this command. This will prompt for a password.
+**Example**: `$ docker-registry-cli -u testuser list-repositories`
 
 ### docker-registry-shell
 

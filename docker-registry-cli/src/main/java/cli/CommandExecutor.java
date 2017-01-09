@@ -2,6 +2,7 @@ package cli;
 
 import cli.parser.ConnectionOptionType;
 import dockerregistry.model.HttpInterface;
+import dockerregistry.model.Image;
 import dockerregistry.model.LocalConfigHandler;
 import dockerregistry.model.Registry;
 import java.io.BufferedReader;
@@ -71,6 +72,18 @@ public class CommandExecutor {
             }
         }
         return tagNames;
+    }
+
+    public void executeDeleteImages(List<String> commandArgs) throws IOException {
+        for (String imageName : commandArgs){
+            System.out.println("deleting " + imageName);
+            Image image = registry.getImageByName(imageName);
+            // the registry's DELETE for images requires the repository name 
+            // and the hash of the image's manifest
+            String repositoryName = image.getRepoName();
+            String manifestHash = image.getManifest().getManifestBlob().getHash();
+            registry.deleteImageFromRegistry(repositoryName, manifestHash);
+        }        
     }
     
 
