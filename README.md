@@ -119,11 +119,11 @@ These images can not be pulled from your registry any longer, but this *delete* 
 If you have no default URL or credentials set via `set-url` or `set-credentials` commands, or if you want to use an URL or credentials different from the default ones, you can use connection options.
 
 ###### **--registry-url** or **--registry** or **-r**
-Uses the following argument as URL for this command.
+Uses the following argument as URL for this command.  
 **Example**: `$ docker-registry-cli -r http://registry.my-server.com list-repositories`
 
 ###### **--user-name** or **--username** or **-u**
-Uses the argument that follows as user name for this command. This will prompt for a password.
+Uses the argument that follows as user name for this command. This will prompt for a password.  
 **Example**: `$ docker-registry-cli -u testuser list-repositories`
 
 ### docker-registry-shell
