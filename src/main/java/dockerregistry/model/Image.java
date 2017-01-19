@@ -2,6 +2,12 @@ package dockerregistry.model;
 
 import dockerregistry.exceptions.StringIsNotInRepoPlusTagNameFormatException;
 
+/**
+ * Plain object to hold information of an image.
+ * Relevant to an image are:
+ * * Its name, composed of a repository name and a tag name separated by a colon.
+ * * The manifest, i.e. the document defining an image.
+ */
 public class Image {
     
     private final String repoName;

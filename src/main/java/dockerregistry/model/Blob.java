@@ -2,6 +2,9 @@ package dockerregistry.model;
 
 import java.util.Objects;
 
+/**
+ * Plain object to hold information (its hash and its size) of a single blob.
+ */
 public class Blob {    
     private final String hash;
     private final int size;

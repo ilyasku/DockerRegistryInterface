@@ -1,13 +1,15 @@
 package dockerregistry.model;
 
-import com.google.common.collect.HashBiMap;
 import dockerregistry.exceptions.ImageByThatNameAlreadyInImageCacheException;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 
+/**
+ * In-memory representation of a registry; this was integrated as a mean to reduce
+ * HTTP requests when using the interactive docker-registry-shell, to store 
+ * information locally once it was read from the registry.
+ */
 public class RegistryCacheInMemory {
        
     private final Map<String,  Blob> blobCache = new HashMap<>();    

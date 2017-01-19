@@ -6,6 +6,9 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Maps Json strings (response from the registry HTTP API) to Java objects.
+ */
 public class Mapper {
     
     public String[] mapRepositoryNames(String httpResponseBody) throws IOException{

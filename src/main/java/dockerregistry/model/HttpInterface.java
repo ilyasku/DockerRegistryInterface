@@ -7,6 +7,9 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Scanner;
 
+/**
+ * Class to handle communication with a registry's HTTP API.
+ */
 public class HttpInterface {
     
     private final String urlPrefix;

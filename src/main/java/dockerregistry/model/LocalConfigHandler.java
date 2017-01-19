@@ -13,6 +13,11 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
+/**
+ * Handles some defaults and settings saved locally.
+ * This stands out in that it does not interact with any of the other classes
+ * of this package.
+ */
 public class LocalConfigHandler {
     
     private static String homePath = System.getProperty("user.home");
@@ -79,7 +84,10 @@ public class LocalConfigHandler {
         writer.print(encodedCredentials);
         writer.close();        
     }
-            
+    
+    /**
+     * Checks whether the config directory is present. If not, creates it.
+     */
     private void checkForConfigDirectory() throws IOException {
         Path path = Paths.get(getHomePath() + "/" + getConfigDirectoryPath());
         if (Files.notExists(path)){            
@@ -87,8 +95,6 @@ public class LocalConfigHandler {
         }
     }
     
-
-
     private String readCredentials() throws FileNotFoundException, IOException {
         InputStream fileInputStream = new FileInputStream(homePath + "/" 
                 + configDirectoryPath + "/" + credentialsFileName);

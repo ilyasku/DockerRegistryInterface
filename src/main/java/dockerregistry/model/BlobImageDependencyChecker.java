@@ -5,6 +5,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * Class to build a dependecy map of which images depend on which blobs.
+ */
 public class BlobImageDependencyChecker {
 
     private Map<String, List<String>> dependencyMap;
